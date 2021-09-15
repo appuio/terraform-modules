@@ -1,0 +1,35 @@
+name: Pull Request
+on:
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  provide_modules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$(find modules -mindepth 1 -maxdepth 1 -type d | jq -R | jq -sc)"
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+  validate:
+    needs: provide_modules
+    strategy:
+      matrix:
+        module: ${{ fromJson(needs.provide_modules.outputs.matrix) }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ matrix.module }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract Terraform version from constraints in module
+        run: echo TF_VERSION=$(grep "^[[:space:]]\+required_version = \"" providers.tf | cut -d= -f2- | tr -d ' "') >> $GITHUB_ENV
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+      - run: terraform fmt -check -recursive
+      - run: terraform init -input=false
+      - run: terraform validate
