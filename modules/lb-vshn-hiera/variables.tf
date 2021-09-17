@@ -19,11 +19,6 @@ variable "cluster_id" {
   description = "ID of the cluster"
 }
 
-variable "privnet_cidr" {
-  default     = "172.18.200.0/24"
-  description = "CIDR of the private net to use"
-}
-
 variable "lb_names" {
   description = "The hostnames of the loadbalancers"
   type        = list(string)
@@ -39,17 +34,23 @@ variable "hieradata_repo_user" {
   description = "User used to check out the hieradata git repo"
 }
 
-variable "api_vip_network" {
+variable "internal_vip" {
   type        = string
-  description = "Floating IP for the API"
+  description = "Virtual IP for the Kubernetes/OpenShift API in the internal network"
+  default     = ""
 }
 
-variable "nat_vip_network" {
+variable "api_vip" {
   type        = string
-  description = "Floating IP for the NAT"
+  description = "Floating IP for the Kubernetes/OpenShift API"
 }
 
-variable "router_vip_network" {
+variable "nat_vip" {
   type        = string
-  description = "Floating IP for the router"
+  description = "Floating IP which is used as the source IP for the cluster's NATed egress traffic"
+}
+
+variable "router_vip" {
+  type        = string
+  description = "Floating IP for the cluster's ingress controller/application router"
 }
