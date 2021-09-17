@@ -20,11 +20,11 @@ resource "local_file" "lb_hieradata" {
     "${path.module}/templates/hieradata.yaml.tmpl",
     {
       "cluster_id"   = var.cluster_id
-      "api_vip"      = cidrhost(var.api_vip_network, 0)
-      "router_vip"   = cidrhost(var.router_vip_network, 0)
       "api_secret"   = var.lb_cloudscale_api_secret
-      "internal_vip" = cidrhost(var.privnet_cidr, 100)
-      "nat_vip"      = cidrhost(var.nat_vip_network, 0)
+      "api_vip"      = var.api_vip
+      "internal_vip" = var.internal_vip
+      "nat_vip"      = var.nat_vip
+      "router_vip"   = var.router_vip
       "nodes"        = local.instance_fqdns
       "backends" = {
         "api"    = formatlist("etcd-%d.${var.node_name_suffix}", range(3))
