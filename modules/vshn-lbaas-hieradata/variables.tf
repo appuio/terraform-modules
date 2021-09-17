@@ -31,7 +31,7 @@ variable "lb_names" {
 
 variable "lb_cloudscale_api_secret" {
   type        = string
-  description = "Read-Only API secret to access floating ips"
+  description = "Read/Write API secret for Floaty"
 }
 
 variable "hieradata_repo_user" {
