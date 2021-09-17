@@ -21,3 +21,7 @@ output "private_ipv4_addresses" {
 output "public_ipv4_addresses" {
   value = cloudscale_server.lb[*].public_ipv4_address
 }
+
+output "hieradata_mr_url" {
+  value = module.hiera.hieradata_mr_url
+}
