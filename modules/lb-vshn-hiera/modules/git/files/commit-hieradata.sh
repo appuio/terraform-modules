@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 readonly cluster_id="$1"
 readonly mr_url_file="$2"
 readonly branch="tf/lbaas/${cluster_id}"
