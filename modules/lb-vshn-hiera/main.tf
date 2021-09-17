@@ -27,8 +27,8 @@ resource "local_file" "lb_hieradata" {
       "router_vip"   = var.router_vip
       "nodes"        = local.instance_fqdns
       "backends" = {
-        "api"    = formatlist("etcd-%d.${var.node_name_suffix}", range(3))
-        "router" = var.router_ip_addresses[*],
+        "api"    = var.api_backends[*]
+        "router" = var.router_backends[*],
       }
       "bootstrap_node" = var.bootstrap_node
   })

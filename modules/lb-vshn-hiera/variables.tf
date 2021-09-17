@@ -1,6 +1,11 @@
-variable "router_ip_addresses" {
+variable "router_backends" {
   type        = list(string)
-  description = "Private IPV4 addresses of nodes running ingress routers"
+  description = "IP addresses or hostnames of nodes running ingress routers"
+}
+
+variable "api_backends" {
+  type        = list(string)
+  description = "IP addresses or hostnames of the Kubernetes/OpenShift API"
 }
 
 variable "bootstrap_node" {
