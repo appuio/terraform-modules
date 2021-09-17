@@ -30,21 +30,26 @@ variable "lb_names" {
 }
 
 variable "lb_cloudscale_api_secret" {
-  type = string
+  type        = string
+  description = "Read-Only API secret to access floating ips"
 }
 
 variable "hieradata_repo_user" {
-  type = string
+  type        = string
+  description = "User used to check out the hieradata git repo"
 }
 
 variable "api_vip_network" {
-  type = string
+  type        = string
+  description = "Floating IP for the API"
 }
 
 variable "nat_vip_network" {
-  type = string
+  type        = string
+  description = "Floating IP for the NAT"
 }
 
 variable "router_vip_network" {
-  type = string
+  type        = string
+  description = "Floating IP for the router"
 }

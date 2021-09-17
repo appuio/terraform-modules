@@ -24,10 +24,12 @@ variable "privnet_id" {
 }
 
 variable "lb_count" {
-  type    = number
-  default = 2
+  type        = number
+  default     = 2
+  description = "The number of loadbalancers to create"
 }
 
 variable "control_vshn_net_token" {
-  type = string
+  type        = string
+  description = "The token is used to register the server with https://control.vshn.net/"
 }
