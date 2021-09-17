@@ -1,5 +1,5 @@
 module "hiera" {
-  source = "../lb-vshn-hiera"
+  source = "../vshn-lbaas-hieradata"
 
   api_backends             = formatlist("etcd-%d.${var.node_name_suffix}", range(3))
   router_backends          = var.router_backends
