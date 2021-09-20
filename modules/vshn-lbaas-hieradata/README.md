@@ -18,12 +18,12 @@ The module provides variables to
   * the Kubernetes/OpenShift API
   * the source IP for the cluster's NATed egress traffic
   * the cluster's ingress controller/application router
-* specify a Cloudscale API secret for Floaty
+* specify a cloudscale.ch API secret for Floaty
 * specify the username for the APPUiO hieradata Git repository (see next sections for details).
 
 ## Required credentials
 
-* A read/write Cloudscale API token in the project in which the cluster should be deployed for Floaty
+* A read/write cloudscale.ch API token in the project in which the cluster should be deployed for Floaty
 * A project access token for the APPUiO hieradata repository must be created on [git.vshn.net](https://git.vshn.net/appuio/appuio_hieradata/-/settings/access_tokens)
   * The minimum required permissions for the project access token are `api` (to create MRs), `read_repository` (to clone the repo) and `write_repository` (to push to the repo).
 

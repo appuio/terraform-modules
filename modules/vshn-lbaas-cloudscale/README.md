@@ -19,15 +19,15 @@ The module provides variables to
 
 * control the count of LB VMs.
   Note that we don't recommend changing the count for the LBs from their default values.
-* specify the cluster's id, Cloudscale region, base domain, SSH key, router backends, bootstrap node, virtual ip for the Kubernetes API in the internal network.
-* specify a Cloudscale API secret for Floaty
+* specify the cluster's id, cloudscale.ch region, base domain, SSH key, router backends, bootstrap node, virtual ip for the Kubernetes API in the internal network.
+* specify a cloudscale.ch API secret for Floaty
 * specify the username for the APPUiO hieradata Git repository (see next sections for details).
 * provide an API token for control.vshn.net (see next sections for details).
 
 ## Required credentials
 
-* A read/write Cloudscale API token in the project in which the cluster should be deployed
-* A read/write Cloudscale API token in the same project for Floaty
+* A read/write cloudscale.ch API token in the project in which the cluster should be deployed
+* A read/write cloudscale.ch API token in the same project for Floaty
 * An API token for the Servers API must be created on [control.vshn.net](https://control.vshn.net/tokens/_create/servers)
 * A project access token for the APPUiO hieradata repository must be created on [git.vshn.net](https://git.vshn.net/appuio/appuio_hieradata/-/settings/access_tokens)
   * The minimum required permissions for the project access token are `api` (to create MRs), `read_repository` (to clone the repo) and `write_repository` (to push to the repo).
