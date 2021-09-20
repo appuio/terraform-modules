@@ -28,7 +28,7 @@ The module provides variables to
 
 * A read/write cloudscale.ch API token in the project in which the cluster should be deployed
 * A read/write cloudscale.ch API token in the same project for Floaty
-* An API token for the Servers API must be created on [control.vshn.net](https://control.vshn.net/tokens/_create/servers)
+* An API token for the control.vshn.net Servers API must be created on [control.vshn.net](https://control.vshn.net/tokens/_create/servers)
 * A project access token for the APPUiO hieradata repository must be created on [git.vshn.net](https://git.vshn.net/appuio/appuio_hieradata/-/settings/access_tokens)
   * The minimum required permissions for the project access token are `api` (to create MRs), `read_repository` (to clone the repo) and `write_repository` (to push to the repo).
 
