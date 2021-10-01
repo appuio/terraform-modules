@@ -6,6 +6,8 @@ module "hiera" {
   bootstrap_node           = var.bootstrap_node
   node_name_suffix         = var.node_name_suffix
   cluster_id               = var.cluster_id
+  distribution             = var.distribution
+  ingress_controller       = var.ingress_controller
   lb_names                 = random_id.lb[*].hex
   lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
   hieradata_repo_user      = var.hieradata_repo_user
