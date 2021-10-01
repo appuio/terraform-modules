@@ -41,7 +41,7 @@ fi
 
 if [ "${push}" -eq 1 ]; then
   # Push branch to origin and set upstream
-  git push origin "${branch}"
+  git push origin "${branch}":"${branch}"
 fi
 
 # Always set branch's upstream to origin/master.
