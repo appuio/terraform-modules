@@ -23,5 +23,5 @@ output "public_ipv4_addresses" {
 }
 
 output "hieradata_mr_url" {
-  value = module.hiera.hieradata_mr_url
+  value = module.hiera[*].hieradata_mr_url
 }
