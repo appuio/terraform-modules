@@ -61,6 +61,12 @@ variable "hieradata_repo_user" {
   description = "User used to check out the hieradata git repo"
 }
 
+variable "api_backends" {
+  type        = list(string)
+  description = "IP addresses or hostnames of nodes hosting the control plane"
+  default     = []
+}
+
 variable "router_backends" {
   type        = list(string)
   description = "IP addresses or hostnames of nodes running ingress routers"

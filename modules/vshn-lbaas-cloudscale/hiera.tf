@@ -1,9 +1,12 @@
+locals {
+  api_backends = length(var.api_backends) > 0 ? var.api_backends : formatlist("etcd-%d.${var.node_name_suffix}", range(3))
+}
 module "hiera" {
   count = var.lb_count > 0 ? 1 : 0
 
   source = "../vshn-lbaas-hieradata"
 
-  api_backends             = formatlist("etcd-%d.${var.node_name_suffix}", range(3))
+  api_backends             = local.api_backends
   router_backends          = var.router_backends
   bootstrap_node           = var.bootstrap_node
   node_name_suffix         = var.node_name_suffix
