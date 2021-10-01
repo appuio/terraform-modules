@@ -19,13 +19,15 @@ resource "local_file" "lb_hieradata" {
   content = templatefile(
     "${path.module}/templates/hieradata.yaml.tmpl",
     {
-      "cluster_id"   = var.cluster_id
-      "api_secret"   = var.lb_cloudscale_api_secret
-      "api_vip"      = var.api_vip
-      "internal_vip" = var.internal_vip
-      "nat_vip"      = var.nat_vip
-      "router_vip"   = var.router_vip
-      "nodes"        = local.instance_fqdns
+      "cluster_id"         = var.cluster_id
+      "distribution"       = var.distribution
+      "ingress_controller" = var.ingress_controller
+      "api_secret"         = var.lb_cloudscale_api_secret
+      "api_vip"            = var.api_vip
+      "internal_vip"       = var.internal_vip
+      "nat_vip"            = var.nat_vip
+      "router_vip"         = var.router_vip
+      "nodes"              = local.instance_fqdns
       "backends" = {
         "api"    = var.api_backends[*]
         "router" = var.router_backends[*],
