@@ -1,4 +1,10 @@
 # Managed by Terraform for Project Syn cluster ${cluster_id}
+%{ if distribution != "" ~}
+profile_openshift4_gateway::distribution: ${distribution}
+%{ endif ~}
+%{ if ingress_controller != "" ~}
+profile_openshift4_gateway::ingress_controller: ${ingress_controller}
+%{ endif ~}
 profile_openshift4_gateway::nodes:
 %{ for node in nodes ~}
   - ${node}

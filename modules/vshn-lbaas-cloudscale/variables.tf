@@ -8,6 +8,18 @@ variable "cluster_id" {
   description = "ID of the cluster"
 }
 
+variable "distribution" {
+  type        = string
+  description = "The K8s distribution running on the cluster"
+  default     = ""
+}
+
+variable "ingress_controller" {
+  type        = string
+  description = "The ingress controller running on the cluster"
+  default     = ""
+}
+
 variable "region" {
   type        = string
   description = "Region where to deploy nodes"
