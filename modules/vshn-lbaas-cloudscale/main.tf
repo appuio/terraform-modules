@@ -70,7 +70,7 @@ locals {
       "mkdir -p /etc/puppetlabs/facter/facts.d",
       "netplan apply",
       ["bash", "-c",
-      "set +e -x; for ((i=0; i < 3; ++i)); do /opt/puppetlabs/bin/puppet facts && break; done; for ((i=0; i < 3; ++i)); do /opt/puppetlabs/bin/puppet agent -t --server master.puppet.vshn.net && break; done"],
+      "set +e -x; for ((i=0; i < 3; ++i)); do /opt/puppetlabs/bin/puppet facts && break; done; for ((i=0; i < 3; ++i)); do /opt/puppetlabs/bin/puppet agent -t --server master.puppet.vshn.net --environment AppuioLbaas && break; done"],
       "sleep 5",
       "shutdown --reboot +1 'Reboot for system setup'",
     ],
