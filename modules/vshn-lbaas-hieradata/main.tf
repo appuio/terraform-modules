@@ -33,6 +33,7 @@ resource "local_file" "lb_hieradata" {
         "router" = var.router_backends[*],
       }
       "bootstrap_node" = var.bootstrap_node
+      "team"           = var.team
   })
 
   filename             = "${path.cwd}/appuio_hieradata/lbaas/${var.cluster_id}.yaml"

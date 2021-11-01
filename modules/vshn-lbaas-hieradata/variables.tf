@@ -71,3 +71,9 @@ variable "router_vip" {
   type        = string
   description = "Floating IP for the cluster's ingress controller/application router"
 }
+
+variable "team" {
+  type        = string
+  description = "Team to assign the load balancers to in Icinga. All lower case."
+  default     = ""
+}
