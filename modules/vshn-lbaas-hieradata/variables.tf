@@ -75,5 +75,4 @@ variable "router_vip" {
 variable "team" {
   type        = string
   description = "Team to assign the load balancers to in Icinga. All lower case."
-  default     = ""
 }
