@@ -126,6 +126,7 @@ resource "cloudscale_server" "lb" {
   volume_size_gb                 = 50
   ssh_keys                       = var.ssh_keys
   skip_waiting_for_ssh_host_keys = true
+
   interfaces {
     type = "public"
   }
@@ -133,6 +134,15 @@ resource "cloudscale_server" "lb" {
     type         = "private"
     network_uuid = var.privnet_id
   }
+
+  dynamic "interfaces" {
+    for_each = var.additional_networks
+    content {
+      type         = "private"
+      network_uuid = interfaces.value
+    }
+  }
+
   lifecycle {
     ignore_changes = [
       skip_waiting_for_ssh_host_keys,
