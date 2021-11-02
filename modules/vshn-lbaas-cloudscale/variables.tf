@@ -83,3 +83,8 @@ variable "internal_vip" {
   description = "Virtual IP for the Kubernetes/OpenShift API in the internal network"
   default     = ""
 }
+
+variable "team" {
+  type        = string
+  description = "Team to assign the load balancers to in Icinga. All lower case."
+}
