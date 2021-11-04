@@ -88,3 +88,9 @@ variable "team" {
   type        = string
   description = "Team to assign the load balancers to in Icinga. All lower case."
 }
+
+variable "additional_networks" {
+  type        = list(string)
+  description = "List of UUIDs of additional cloudscale.ch networks to attach"
+  default     = []
+}
