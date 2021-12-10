@@ -21,4 +21,5 @@ module "hiera" {
   nat_vip                  = cidrhost(cloudscale_floating_ip.nat_vip[0].network, 0)
   router_vip               = cidrhost(cloudscale_floating_ip.router_vip[0].network, 0)
   team                     = var.team
+  enable_proxy_protocol    = var.enable_proxy_protocol
 }

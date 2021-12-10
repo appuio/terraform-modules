@@ -32,8 +32,9 @@ resource "local_file" "lb_hieradata" {
         "api"    = var.api_backends[*]
         "router" = var.router_backends[*],
       }
-      "bootstrap_node" = var.bootstrap_node
-      "team"           = var.team
+      "enable_proxy_protocol" = var.enable_proxy_protocol
+      "bootstrap_node"        = var.bootstrap_node
+      "team"                  = var.team
   })
 
   filename             = "${path.cwd}/appuio_hieradata/lbaas/${var.cluster_id}.yaml"

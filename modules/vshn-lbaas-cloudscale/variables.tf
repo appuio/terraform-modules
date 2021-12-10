@@ -94,3 +94,9 @@ variable "additional_networks" {
   description = "List of UUIDs of additional cloudscale.ch networks to attach"
   default     = []
 }
+
+variable "enable_proxy_protocol" {
+  type        = bool
+  description = "Enable the PROXY protocol for the Router backends. WARNING: Connections will fail until you enable the same on the OpenShift router as well"
+  default     = false
+}
