@@ -1,3 +1,13 @@
+variable "cloud_provider" {
+  type        = string
+  description = "The cloud provider to generate the hieradata for."
+
+  validation {
+    condition     = var.cloud_provider == "cloudscale" || var.cloud_provider == "exoscale"
+    error_message = "The vshn-lbaas-hieradata module currently only supports cloudscale.ch and Exoscale."
+  }
+}
+
 variable "router_backends" {
   type        = list(string)
   description = "IP addresses or hostnames of nodes running ingress routers"
@@ -41,9 +51,22 @@ variable "lb_names" {
   type        = list(string)
 }
 
-variable "lb_cloudscale_api_secret" {
-  type        = string
-  description = "Read/Write API secret for Floaty"
+variable "lb_api_credentials" {
+  type = object({
+    cloudscale = optional(object({
+      secret = string,
+    })),
+    exoscale = optional(object({
+      key    = string,
+      secret = string,
+    }))
+  })
+  description = "API credentials for Floaty."
+
+  validation {
+    condition     = var.lb_api_credentials.cloudscale != null || var.lb_api_credentials.exoscale != null
+    error_message = "You *MUST* configure either cloudscale.ch or Exoscale API credentials."
+  }
 }
 
 variable "hieradata_repo_user" {

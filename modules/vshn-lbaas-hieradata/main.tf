@@ -2,6 +2,12 @@ locals {
   instance_fqdns = formatlist("%s.${var.node_name_suffix}", var.lb_names)
 
   lb_count = length(var.lb_names)
+
+  api_key    = var.cloud_provider == "exoscale" ? var.lb_api_credentials.exoscale.key : ""
+  api_secret = var.cloud_provider == "exoscale" ? var.lb_api_credentials.exoscale.secret : var.lb_api_credentials.cloudscale.secret
+
+  public_interface   = var.cloud_provider == "cloudscale" ? "ens3" : "eth0"
+  private_interfaces = var.cloud_provider == "cloudscale" ? ["ens4"] : ["eth1"]
 }
 
 resource "gitfile_checkout" "appuio_hieradata" {
@@ -19,14 +25,18 @@ resource "local_file" "lb_hieradata" {
   content = templatefile(
     "${path.module}/templates/hieradata.yaml.tmpl",
     {
+      "cloud_provider"     = var.cloud_provider
       "cluster_id"         = var.cluster_id
       "distribution"       = var.distribution
       "ingress_controller" = var.ingress_controller
-      "api_secret"         = var.lb_cloudscale_api_secret
+      "api_key"            = local.api_key
+      "api_secret"         = local.api_secret
       "api_vip"            = var.api_vip
       "internal_vip"       = var.internal_vip
       "nat_vip"            = var.nat_vip
       "router_vip"         = var.router_vip
+      "public_interface"   = local.public_interface
+      "private_interfaces" = local.private_interfaces
       "nodes"              = local.instance_fqdns
       "backends" = {
         "api"    = var.api_backends[*]

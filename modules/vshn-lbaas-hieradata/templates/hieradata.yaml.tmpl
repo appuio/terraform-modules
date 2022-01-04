@@ -9,12 +9,16 @@ profile_openshift4_gateway::nodes:
 %{ for node in nodes ~}
   - ${node}
 %{ endfor ~}
-profile_openshift4_gateway::public_interface: ens3
+profile_openshift4_gateway::public_interface: ${public_interface}
 profile_openshift4_gateway::private_interfaces:
-  - ens4
+%{ for if in private_interfaces ~}
+  - ${if}
+%{ endfor ~}
 profile_openshift4_gateway::floating_addresses:
   api: ${api_vip}
+%{ if nat_vip != "" ~}
   nat: ${nat_vip}
+%{ endif ~}
   router: ${router_vip}
 profile_openshift4_gateway::floating_address_provider: cloudscale
 %{ if internal_vip != "" ~}

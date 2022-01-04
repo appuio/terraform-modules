@@ -6,20 +6,28 @@ module "hiera" {
 
   source = "../vshn-lbaas-hieradata"
 
-  api_backends             = local.api_backends
-  router_backends          = var.router_backends
-  bootstrap_node           = var.bootstrap_node
-  node_name_suffix         = var.node_name_suffix
-  cluster_id               = var.cluster_id
-  distribution             = var.distribution
-  ingress_controller       = var.ingress_controller
-  lb_names                 = random_id.lb[*].hex
-  lb_cloudscale_api_secret = var.lb_cloudscale_api_secret
-  hieradata_repo_user      = var.hieradata_repo_user
-  api_vip                  = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
-  internal_vip             = var.internal_vip
-  nat_vip                  = cidrhost(cloudscale_floating_ip.nat_vip[0].network, 0)
-  router_vip               = cidrhost(cloudscale_floating_ip.router_vip[0].network, 0)
-  team                     = var.team
-  enable_proxy_protocol    = var.enable_proxy_protocol
+  cloud_provider = "cloudscale"
+
+  api_backends          = local.api_backends
+  router_backends       = var.router_backends
+  bootstrap_node        = var.bootstrap_node
+  node_name_suffix      = var.node_name_suffix
+  cluster_id            = var.cluster_id
+  distribution          = var.distribution
+  ingress_controller    = var.ingress_controller
+  lb_names              = random_id.lb[*].hex
+  hieradata_repo_user   = var.hieradata_repo_user
+  api_vip               = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
+  internal_vip          = var.internal_vip
+  nat_vip               = cidrhost(cloudscale_floating_ip.nat_vip[0].network, 0)
+  router_vip            = cidrhost(cloudscale_floating_ip.router_vip[0].network, 0)
+  team                  = var.team
+  enable_proxy_protocol = var.enable_proxy_protocol
+
+  lb_api_credentials = {
+    cloudscale = {
+      secret = var.lb_cloudscale_api_secret
+    }
+    exoscale = null
+  }
 }
