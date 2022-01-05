@@ -25,3 +25,7 @@ output "hieradata_mr_url" {
 output "security_group_name" {
   value = exoscale_security_group.load_balancers.name
 }
+
+output "internal_vip" {
+  value = local.internal_vip
+}

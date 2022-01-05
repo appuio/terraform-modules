@@ -5,13 +5,15 @@ variable "exoscale_domain_name" {
 
 variable "cluster_network" {
   type = object({
-    enabled = bool
-    name    = string
+    enabled           = bool
+    name              = string
+    internal_vip_host = string
   })
   description = "Set this to `enabled=true` and the name of an existing Exoscale private network to use that network as the LB private network."
   default = {
-    enabled = false
-    name    = ""
+    enabled           = false
+    name              = ""
+    internal_vip_host = "100"
   }
 }
 
@@ -92,12 +94,6 @@ variable "router_backends" {
 variable "bootstrap_node" {
   type        = string
   description = "The bootstrap node's private IPV4 adsress"
-  default     = ""
-}
-
-variable "internal_vip" {
-  type        = string
-  description = "Virtual IP for the Kubernetes/OpenShift API in the internal network"
   default     = ""
 }
 
