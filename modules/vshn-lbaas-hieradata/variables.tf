@@ -4,7 +4,7 @@ variable "cloud_provider" {
 
   validation {
     condition     = var.cloud_provider == "cloudscale" || var.cloud_provider == "exoscale"
-    error_message = "The vshn-lbaas-hieradata module currently only supports cloudscale.ch and Exoscale."
+    error_message = "The vshn-lbaas-hieradata module currently only supports cloudscale.ch (`cloudscale`) and Exoscale (`exoscale`)."
   }
 }
 
