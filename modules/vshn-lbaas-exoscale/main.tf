@@ -225,6 +225,12 @@ resource "exoscale_nic" "lb" {
   ip_address = cidrhost(local.network_cidr, 21 + count.index)
 }
 
+resource "exoscale_nic" "additional_network" {
+  count      = var.lb_count * length(var.additional_networks)
+  compute_id = exoscale_compute.lb[floor(count.index / length(var.additional_networks))].id
+  network_id = var.additional_networks[count.index % length(var.additional_networks)]
+}
+
 resource "exoscale_domain_record" "lb" {
   count       = var.lb_count
   domain      = data.exoscale_domain.cluster.id
