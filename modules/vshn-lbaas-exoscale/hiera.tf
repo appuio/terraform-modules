@@ -5,6 +5,7 @@ locals {
   internal_vip = var.cluster_network.enabled ? (
     cidrhost(local.network_cidr, var.cluster_network.internal_vip_host)
   ) : ""
+  nat_vip = var.cluster_network.enabled ? exoscale_ipaddress.nat[0].ip_address : ""
 }
 module "hiera" {
   count = var.lb_count > 0 ? 1 : 0
