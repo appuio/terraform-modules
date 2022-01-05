@@ -1,6 +1,10 @@
 locals {
-  api_backends = length(var.api_backends) > 0 ? var.api_backends : formatlist("etcd-%d.${var.exoscale_domain_name}", range(3))
-  internal_vip = var.cluster_network.enabled ? cidrhost(local.network_cidr, var.cluster_network.internal_vip_host) : ""
+  api_backends = length(var.api_backends) > 0 ? (
+    var.api_backends
+  ) : formatlist("etcd-%d.${var.exoscale_domain_name}", range(3))
+  internal_vip = var.cluster_network.enabled ? (
+    cidrhost(local.network_cidr, var.cluster_network.internal_vip_host)
+  ) : ""
 }
 module "hiera" {
   count = var.lb_count > 0 ? 1 : 0
