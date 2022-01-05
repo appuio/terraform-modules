@@ -9,19 +9,25 @@ profile_openshift4_gateway::nodes:
 %{ for node in nodes ~}
   - ${node}
 %{ endfor ~}
-profile_openshift4_gateway::public_interface: ens3
+profile_openshift4_gateway::public_interface: ${public_interface}
 profile_openshift4_gateway::private_interfaces:
-  - ens4
+%{ for if in private_interfaces ~}
+  - ${if}
+%{ endfor ~}
 profile_openshift4_gateway::floating_addresses:
   api: ${api_vip}
+%{ if nat_vip != "" ~}
   nat: ${nat_vip}
+%{ endif ~}
   router: ${router_vip}
-profile_openshift4_gateway::floating_address_provider: cloudscale
+profile_openshift4_gateway::floating_address_provider: ${cloud_provider}
 %{ if internal_vip != "" ~}
 profile_openshift4_gateway::internal_vip: ${internal_vip}
 %{ endif ~}
 profile_openshift4_gateway::floating_address_settings:
-  token: ${api_secret}
+%{ for k, v in api_credentials ~}
+  ${k}: ${v}
+%{ endfor ~}
 profile_openshift4_gateway::backends:
   'api':%{ if length(backends["api"]) == 0 && bootstrap_node == "" } []%{ endif }
 %{ for be in backends["api"] ~}
