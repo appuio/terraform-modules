@@ -20,7 +20,7 @@ profile_openshift4_gateway::floating_addresses:
   nat: ${nat_vip}
 %{ endif ~}
   router: ${router_vip}
-profile_openshift4_gateway::floating_address_provider: cloudscale
+profile_openshift4_gateway::floating_address_provider: ${cloud_provider}
 %{ if internal_vip != "" ~}
 profile_openshift4_gateway::internal_vip: ${internal_vip}
 %{ endif ~}
