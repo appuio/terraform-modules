@@ -25,7 +25,9 @@ profile_openshift4_gateway::floating_address_provider: ${cloud_provider}
 profile_openshift4_gateway::internal_vip: ${internal_vip}
 %{ endif ~}
 profile_openshift4_gateway::floating_address_settings:
-  token: ${api_secret}
+%{ for k, v in api_credentials ~}
+  ${k}: ${v}
+%{ endfor ~}
 profile_openshift4_gateway::backends:
   'api':%{ if length(backends["api"]) == 0 && bootstrap_node == "" } []%{ endif }
 %{ for be in backends["api"] ~}

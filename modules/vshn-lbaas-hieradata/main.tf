@@ -3,8 +3,7 @@ locals {
 
   lb_count = length(var.lb_names)
 
-  api_key    = var.cloud_provider == "exoscale" ? var.lb_api_credentials.exoscale.key : ""
-  api_secret = var.cloud_provider == "exoscale" ? var.lb_api_credentials.exoscale.secret : var.lb_api_credentials.cloudscale.secret
+  api_credentials = var.cloud_provider == "cloudscale" ? var.lb_api_credentials.cloudscale : var.lb_api_credentials.exoscale
 
   public_interface   = var.cloud_provider == "cloudscale" ? "ens3" : "eth0"
   private_interfaces = var.cloud_provider == "cloudscale" ? ["ens4"] : ["eth1"]
@@ -29,8 +28,7 @@ resource "local_file" "lb_hieradata" {
       "cluster_id"         = var.cluster_id
       "distribution"       = var.distribution
       "ingress_controller" = var.ingress_controller
-      "api_key"            = local.api_key
-      "api_secret"         = local.api_secret
+      "api_credentials"    = local.api_credentials
       "api_vip"            = var.api_vip
       "internal_vip"       = var.internal_vip
       "nat_vip"            = var.nat_vip
