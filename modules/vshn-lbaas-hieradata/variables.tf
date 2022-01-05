@@ -54,7 +54,7 @@ variable "lb_names" {
 variable "lb_api_credentials" {
   type = object({
     cloudscale = optional(object({
-      secret = string,
+      token = string,
     })),
     exoscale = optional(object({
       key    = string,

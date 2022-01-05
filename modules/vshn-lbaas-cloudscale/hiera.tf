@@ -26,7 +26,7 @@ module "hiera" {
 
   lb_api_credentials = {
     cloudscale = {
-      secret = var.lb_cloudscale_api_secret
+      token = var.lb_cloudscale_api_secret
     }
     exoscale = null
   }
