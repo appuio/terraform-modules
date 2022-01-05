@@ -143,6 +143,11 @@ resource "null_resource" "register_lb" {
   }
 }
 
+data "exoscale_security_group" "cluster" {
+  count = length(var.cluster_security_group_names)
+  name  = var.cluster_security_group_names[count.index]
+}
+
 resource "exoscale_compute" "lb" {
   count              = var.lb_count
   display_name       = local.instance_fqdns[count.index]
@@ -153,9 +158,10 @@ resource "exoscale_compute" "lb" {
   template_id        = data.exoscale_compute_template.ubuntu2004.id
   size               = "Medium"
   disk_size          = 20
-  security_group_ids = concat(var.cluster_security_group_ids, [
-    exoscale_security_group.load_balancers.id
-  ])
+  security_group_ids = concat(
+    data.exoscale_security_group.cluster[*].id,
+    [exoscale_security_group.load_balancers.id]
+  )
 
   user_data = format("#cloud-config\n%s", yamlencode(merge(
     local.common_user_data,

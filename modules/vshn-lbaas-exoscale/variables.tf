@@ -37,10 +37,14 @@ variable "region" {
   description = "Region where to deploy nodes"
 }
 
-variable "cluster_security_group_ids" {
+variable "cluster_security_group_names" {
   type        = list(string)
   description = "Security group ids for which the LBs should allow traffic on the Machine Config server port"
-  default     = []
+
+  validation {
+    condition     = length(var.cluster_security_group_names) > 0
+    error_message = "You must specify at least one cluster security group."
+  }
 }
 
 variable "ssh_key_name" {
