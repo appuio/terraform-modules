@@ -2,6 +2,7 @@ resource "cloudscale_floating_ip" "api_vip" {
   count       = var.lb_count != 0 ? 1 : 0
   ip_version  = 4
   region_slug = var.region
+  reverse_ptr = "api.${var.node_name_suffix}"
 
   lifecycle {
     ignore_changes = [
@@ -16,6 +17,7 @@ resource "cloudscale_floating_ip" "router_vip" {
   count       = var.lb_count != 0 ? 1 : 0
   ip_version  = 4
   region_slug = var.region
+  reverse_ptr = "ingress.${var.node_name_suffix}"
 
   lifecycle {
     ignore_changes = [
@@ -30,6 +32,7 @@ resource "cloudscale_floating_ip" "nat_vip" {
   count       = var.lb_count != 0 ? 1 : 0
   ip_version  = 4
   region_slug = var.region
+  reverse_ptr = "egress.${var.node_name_suffix}"
 
   lifecycle {
     ignore_changes = [
