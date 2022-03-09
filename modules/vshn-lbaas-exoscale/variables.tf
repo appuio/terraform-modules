@@ -113,3 +113,9 @@ variable "enable_proxy_protocol" {
   description = "Enable the PROXY protocol for the Router backends. WARNING: Connections will fail until you enable the same on the OpenShift router as well"
   default     = false
 }
+
+variable "additional_affinity_group_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of additional affinity group IDs to configure on all lbs"
+}
