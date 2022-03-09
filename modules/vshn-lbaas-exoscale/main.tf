@@ -158,18 +158,22 @@ data "exoscale_security_group" "cluster" {
 }
 
 resource "exoscale_compute" "lb" {
-  count              = var.lb_count
-  display_name       = local.instance_fqdns[count.index]
-  hostname           = random_id.lb[count.index].hex
-  key_pair           = var.ssh_key_name
-  zone               = var.region
-  affinity_group_ids = [exoscale_affinity.lb.id]
-  template_id        = data.exoscale_compute_template.ubuntu2004.id
-  size               = "Medium"
-  disk_size          = 20
+  count        = var.lb_count
+  display_name = local.instance_fqdns[count.index]
+  hostname     = random_id.lb[count.index].hex
+  key_pair     = var.ssh_key_name
+  zone         = var.region
+  template_id  = data.exoscale_compute_template.ubuntu2004.id
+  size         = "Medium"
+  disk_size    = 20
+
   security_group_ids = concat(
     data.exoscale_security_group.cluster[*].id,
     [exoscale_security_group.load_balancers.id]
+  )
+  affinity_group_ids = concat(
+    [exoscale_affinity.lb.id],
+    var.additional_affinity_group_ids
   )
 
   user_data = format("#cloud-config\n%s", yamlencode(merge(
