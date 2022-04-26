@@ -39,10 +39,17 @@ resource "exoscale_ipaddress" "ingress" {
 }
 resource "exoscale_domain_record" "ingress" {
   domain      = data.exoscale_domain.cluster.name
-  name        = "*.apps"
+  name        = "ingress"
   ttl         = 60
   record_type = "A"
   content     = exoscale_ipaddress.ingress.ip_address
+}
+resource "exoscale_domain_record" "wildcard" {
+  domain      = data.exoscale_domain.cluster.name
+  name        = "*.apps"
+  ttl         = 60
+  record_type = "CNAME"
+  content     = exoscale_domain_record.ingress.hostname
 }
 
 resource "exoscale_ipaddress" "nat" {
@@ -50,6 +57,14 @@ resource "exoscale_ipaddress" "nat" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for NAT gateway"
   reverse_dns = "egress.${var.exoscale_domain_name}."
+}
+resource "exoscale_domain_record" "egress" {
+  count       = var.cluster_network.enabled ? 1 : 0
+  domain      = data.exoscale_domain.cluster.name
+  name        = "egress"
+  ttl         = 60
+  record_type = "A"
+  content     = exoscale_ipaddress.nat[0].ip_address
 }
 
 resource "random_id" "lb" {
