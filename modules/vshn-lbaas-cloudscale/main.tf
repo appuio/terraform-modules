@@ -64,7 +64,7 @@ locals {
     "package_upgrade" = true,
     "runcmd" = [
       "sleep '5'",
-      "wget -O /tmp/puppet-source.deb https://apt.puppetlabs.com/puppet6-release-focal.deb",
+      "wget -O /tmp/puppet-source.deb https://apt.puppetlabs.com/puppet7-release-focal.deb",
       "dpkg -i /tmp/puppet-source.deb",
       "rm /tmp/puppet-source.deb",
       "apt-get update",
