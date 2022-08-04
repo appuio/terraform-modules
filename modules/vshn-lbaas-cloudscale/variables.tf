@@ -46,6 +46,12 @@ variable "lb_count" {
   description = "The number of loadbalancers to create"
 }
 
+variable "lb_flavor" {
+  type        = string
+  default     = "plus-8-2"
+  description = "Compute flavor to use for loadbalancers"
+}
+
 variable "control_vshn_net_token" {
   type        = string
   description = "The token is used to register the server with https://control.vshn.net/"
