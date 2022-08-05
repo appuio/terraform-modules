@@ -123,7 +123,7 @@ resource "cloudscale_server" "lb" {
   count                          = var.lb_count
   name                           = local.instance_fqdns[count.index]
   zone_slug                      = "${var.region}1"
-  flavor_slug                    = "plus-8-2"
+  flavor_slug                    = var.lb_flavor
   image_slug                     = "ubuntu-20.04"
   server_group_ids               = var.lb_count != 0 ? [cloudscale_server_group.lb[0].id] : []
   volume_size_gb                 = 50
