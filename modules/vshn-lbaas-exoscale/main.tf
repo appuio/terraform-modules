@@ -123,10 +123,9 @@ locals {
   ]
 }
 
-resource "exoscale_affinity" "lb" {
+resource "exoscale_anti_affinity_group" "lb" {
   name        = "${var.cluster_id}_lb"
   description = "${var.cluster_id} lb nodes"
-  type        = "host anti-affinity"
 }
 
 data "exoscale_compute_template" "ubuntu2004" {
@@ -184,7 +183,7 @@ resource "exoscale_compute" "lb" {
     [exoscale_security_group.load_balancers.id]
   )
   affinity_group_ids = concat(
-    [exoscale_affinity.lb.id],
+    [exoscale_anti_affinity_group.lb.id],
     var.additional_affinity_group_ids
   )
 
