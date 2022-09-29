@@ -25,7 +25,7 @@ resource "exoscale_ipaddress" "api" {
   reverse_dns = "api.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "api" {
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "api"
   ttl         = 60
   record_type = "A"
@@ -38,14 +38,14 @@ resource "exoscale_ipaddress" "ingress" {
   reverse_dns = "ingress.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "ingress" {
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "ingress"
   ttl         = 60
   record_type = "A"
   content     = exoscale_ipaddress.ingress.ip_address
 }
 resource "exoscale_domain_record" "wildcard" {
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "*.apps"
   ttl         = 60
   record_type = "CNAME"
@@ -60,7 +60,7 @@ resource "exoscale_ipaddress" "nat" {
 }
 resource "exoscale_domain_record" "egress" {
   count       = var.cluster_network.enabled ? 1 : 0
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "egress"
   ttl         = 60
   record_type = "A"
@@ -252,7 +252,7 @@ resource "exoscale_nic" "additional_network" {
 
 resource "exoscale_domain_record" "lb" {
   count       = var.lb_count
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = random_id.lb[count.index].hex
   ttl         = 600
   record_type = "A"
