@@ -168,24 +168,39 @@ data "exoscale_security_group" "cluster" {
   name  = var.cluster_security_group_names[count.index]
 }
 
-resource "exoscale_compute" "lb" {
-  count        = var.lb_count
-  display_name = local.instance_fqdns[count.index]
-  hostname     = random_id.lb[count.index].hex
-  key_pair     = var.ssh_key_name
-  zone         = var.region
-  template_id  = data.exoscale_compute_template.ubuntu2004.id
-  size         = "Medium"
-  disk_size    = 20
+resource "exoscale_compute_instance" "lb" {
+  count       = var.lb_count
+  name        = random_id.lb[count.index].hex
+  ssh_key     = var.ssh_key_name
+  zone        = var.region
+  template_id = data.exoscale_compute_template.ubuntu2004.id
+  type        = "standard.medium"
+  disk_size   = 20
 
   security_group_ids = concat(
     data.exoscale_security_group.cluster[*].id,
     [exoscale_security_group.load_balancers.id]
   )
-  affinity_group_ids = concat(
+  anti_affinity_group_ids = concat(
     [exoscale_anti_affinity_group.lb.id],
     var.additional_affinity_group_ids
   )
+
+  # Always configure privnet managed by the module
+  # (either clusternet or lb_vrrp)
+  network_interface {
+    network_id = local.network_id
+    ip_address = cidrhost(local.network_cidr, 21 + count.index)
+  }
+
+  # Configure additional interfaces for each provided privnet
+  dynamic "network_interface" {
+    for_each = toset(var.additional_networks)
+
+    content {
+      network_id = network_interface.value
+    }
+  }
 
   user_data = format("#cloud-config\n%s", yamlencode(merge(
     local.common_user_data,
@@ -222,6 +237,7 @@ resource "exoscale_compute" "lb" {
     ignore_changes = [
       template_id,
       user_data,
+      elastic_ip_ids,
     ]
   }
 
@@ -231,26 +247,11 @@ resource "exoscale_compute" "lb" {
   ]
 }
 
-resource "exoscale_nic" "lb" {
-  count      = var.lb_count
-  compute_id = exoscale_compute.lb[count.index].id
-  network_id = local.network_id
-  # Privnet CIDR IPs starting from .21
-  # (IPs .1,.2,.3 will be assigned by Puppet profile_openshift4_gateway)
-  ip_address = cidrhost(local.network_cidr, 21 + count.index)
-}
-
-resource "exoscale_nic" "additional_network" {
-  count      = var.lb_count * length(var.additional_networks)
-  compute_id = exoscale_compute.lb[floor(count.index / length(var.additional_networks))].id
-  network_id = var.additional_networks[count.index % length(var.additional_networks)]
-}
-
 resource "exoscale_domain_record" "lb" {
   count       = var.lb_count
   domain      = data.exoscale_domain.cluster.id
   name        = random_id.lb[count.index].hex
   ttl         = 600
   record_type = "A"
-  content     = exoscale_compute.lb[count.index].ip_address
+  content     = exoscale_compute_instance.lb[count.index].public_ip_address
 }

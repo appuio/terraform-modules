@@ -11,11 +11,11 @@ output "server_names" {
 }
 
 output "private_ipv4_addresses" {
-  value = exoscale_nic.lb[*].ip_address
+  value = exoscale_compute_instance.lb[*].network_interface[*].ip_address
 }
 
 output "public_ipv4_addresses" {
-  value = exoscale_compute.lb[*].ip_address
+  value = exoscale_compute_instance.lb[*].public_ip_address
 }
 
 output "hieradata_mr_url" {
