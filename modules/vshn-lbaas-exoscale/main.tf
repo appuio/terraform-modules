@@ -19,30 +19,28 @@ resource "exoscale_network" "lbnet" {
   netmask      = cidrnetmask(local.lbnet_cidr)
 }
 
-resource "exoscale_ipaddress" "api" {
+resource "exoscale_elastic_ip" "api" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for API"
-  reverse_dns = "api.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "api" {
   domain      = data.exoscale_domain.cluster.id
   name        = "api"
   ttl         = 60
   record_type = "A"
-  content     = exoscale_ipaddress.api.ip_address
+  content     = exoscale_elastic_ip.api.ip_address
 }
 
-resource "exoscale_ipaddress" "ingress" {
+resource "exoscale_elastic_ip" "ingress" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for ingress controller"
-  reverse_dns = "ingress.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "ingress" {
   domain      = data.exoscale_domain.cluster.id
   name        = "ingress"
   ttl         = 60
   record_type = "A"
-  content     = exoscale_ipaddress.ingress.ip_address
+  content     = exoscale_elastic_ip.ingress.ip_address
 }
 resource "exoscale_domain_record" "wildcard" {
   domain      = data.exoscale_domain.cluster.id
@@ -52,11 +50,10 @@ resource "exoscale_domain_record" "wildcard" {
   content     = exoscale_domain_record.ingress.hostname
 }
 
-resource "exoscale_ipaddress" "nat" {
+resource "exoscale_elastic_ip" "nat" {
   count       = var.cluster_network.enabled ? 1 : 0
   zone        = var.region
   description = "${var.cluster_id} elastic IP for NAT gateway"
-  reverse_dns = "egress.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "egress" {
   count       = var.cluster_network.enabled ? 1 : 0
@@ -64,7 +61,7 @@ resource "exoscale_domain_record" "egress" {
   name        = "egress"
   ttl         = 60
   record_type = "A"
-  content     = exoscale_ipaddress.nat[0].ip_address
+  content     = exoscale_elastic_ip.nat[0].ip_address
 }
 
 resource "random_id" "lb" {

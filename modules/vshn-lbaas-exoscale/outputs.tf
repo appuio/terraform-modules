@@ -1,9 +1,9 @@
 output "api_vip" {
-  value = exoscale_ipaddress.api.ip_address
+  value = exoscale_elastic_ip.api.ip_address
 }
 
 output "router_vip" {
-  value = exoscale_ipaddress.ingress.ip_address
+  value = exoscale_elastic_ip.ingress.ip_address
 }
 
 output "server_names" {
