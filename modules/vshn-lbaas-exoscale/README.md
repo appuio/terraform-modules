@@ -59,7 +59,7 @@ To configure the LBs for such a cluster, provide the following input:
 ```
 cluster_network = {
   enabled           = true
-  name              = exoscale_network.<resource>.name
+  name              = exoscale_private_network.<resource>.name
   internal_vip_host = "100"
 }
 ```

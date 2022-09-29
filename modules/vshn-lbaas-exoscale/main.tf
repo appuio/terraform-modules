@@ -2,21 +2,21 @@ data "exoscale_domain" "cluster" {
   name = var.exoscale_domain_name
 }
 
-data "exoscale_network" "clusternet" {
+data "exoscale_private_network" "clusternet" {
   count = var.cluster_network.enabled ? 1 : 0
-  id    = var.cluster_network.name
+  name  = var.cluster_network.name
   zone  = var.region
 }
 
-resource "exoscale_network" "lbnet" {
+resource "exoscale_private_network" "lbnet" {
   count = var.cluster_network.enabled ? 0 : 1
 
-  zone         = var.region
-  name         = "${var.cluster_id}_lb_vrrp"
-  display_text = "${var.cluster_id} private network for LB VRRP traffic"
-  start_ip     = cidrhost(local.lbnet_cidr, 101)
-  end_ip       = cidrhost(local.lbnet_cidr, 253)
-  netmask      = cidrnetmask(local.lbnet_cidr)
+  zone        = var.region
+  name        = "${var.cluster_id}_lb_vrrp"
+  description = "${var.cluster_id} private network for LB VRRP traffic"
+  start_ip    = cidrhost(local.lbnet_cidr, 101)
+  end_ip      = cidrhost(local.lbnet_cidr, 253)
+  netmask     = cidrnetmask(local.lbnet_cidr)
 }
 
 resource "exoscale_elastic_ip" "api" {
@@ -72,12 +72,12 @@ resource "random_id" "lb" {
 
 data "cidr_network" "lbnet" {
   count = var.cluster_network.enabled ? 1 : 0
-  ip    = data.exoscale_network.clusternet[0].start_ip
-  mask  = data.exoscale_network.clusternet[0].netmask
+  ip    = data.exoscale_private_network.clusternet[0].start_ip
+  mask  = data.exoscale_private_network.clusternet[0].netmask
 }
 
 locals {
-  network_id = var.cluster_network.enabled ? data.exoscale_network.clusternet[0].id : exoscale_network.lbnet[0].id
+  network_id = var.cluster_network.enabled ? data.exoscale_private_network.clusternet[0].id : exoscale_private_network.lbnet[0].id
   # If we create a privnet only for the LB VRRP traffic, we hardcode the CIDR
   # to 172.18.200.0/24.
   lbnet_cidr   = "172.18.200.0/24"
