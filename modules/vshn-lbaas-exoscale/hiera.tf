@@ -46,8 +46,10 @@ module "hiera" {
   lb_api_credentials = {
     cloudscale = null
     exoscale = {
-      key    = exoscale_iam_access_key.floaty.key
-      secret = exoscale_iam_access_key.floaty.secret
+      # Use `nonsensitive` so we get useful apply diffs for the hieradata (if
+      # we already have a copy available locally).
+      key    = nonsensitive(exoscale_iam_access_key.floaty.key)
+      secret = nonsensitive(exoscale_iam_access_key.floaty.secret)
     }
   }
 }
