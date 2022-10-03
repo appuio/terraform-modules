@@ -41,7 +41,7 @@ variable "region" {
 
 variable "cluster_security_group_names" {
   type        = list(string)
-  description = "Security group ids for which the LBs should allow traffic on the Machine Config server port"
+  description = "Security group names for which the LBs should allow traffic on the Machine Config server port"
 
   validation {
     condition     = length(var.cluster_security_group_names) > 0

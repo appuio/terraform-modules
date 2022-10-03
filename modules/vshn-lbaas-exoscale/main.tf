@@ -2,69 +2,66 @@ data "exoscale_domain" "cluster" {
   name = var.exoscale_domain_name
 }
 
-data "exoscale_network" "clusternet" {
+data "exoscale_private_network" "clusternet" {
   count = var.cluster_network.enabled ? 1 : 0
-  id    = var.cluster_network.name
+  name  = var.cluster_network.name
   zone  = var.region
 }
 
-resource "exoscale_network" "lbnet" {
+resource "exoscale_private_network" "lbnet" {
   count = var.cluster_network.enabled ? 0 : 1
 
-  zone         = var.region
-  name         = "${var.cluster_id}_lb_vrrp"
-  display_text = "${var.cluster_id} private network for LB VRRP traffic"
-  start_ip     = cidrhost(local.lbnet_cidr, 101)
-  end_ip       = cidrhost(local.lbnet_cidr, 253)
-  netmask      = cidrnetmask(local.lbnet_cidr)
+  zone        = var.region
+  name        = "${var.cluster_id}_lb_vrrp"
+  description = "${var.cluster_id} private network for LB VRRP traffic"
+  start_ip    = cidrhost(local.lbnet_cidr, 101)
+  end_ip      = cidrhost(local.lbnet_cidr, 253)
+  netmask     = cidrnetmask(local.lbnet_cidr)
 }
 
-resource "exoscale_ipaddress" "api" {
+resource "exoscale_elastic_ip" "api" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for API"
-  reverse_dns = "api.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "api" {
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "api"
   ttl         = 60
   record_type = "A"
-  content     = exoscale_ipaddress.api.ip_address
+  content     = exoscale_elastic_ip.api.ip_address
 }
 
-resource "exoscale_ipaddress" "ingress" {
+resource "exoscale_elastic_ip" "ingress" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for ingress controller"
-  reverse_dns = "ingress.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "ingress" {
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "ingress"
   ttl         = 60
   record_type = "A"
-  content     = exoscale_ipaddress.ingress.ip_address
+  content     = exoscale_elastic_ip.ingress.ip_address
 }
 resource "exoscale_domain_record" "wildcard" {
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "*.apps"
   ttl         = 60
   record_type = "CNAME"
   content     = exoscale_domain_record.ingress.hostname
 }
 
-resource "exoscale_ipaddress" "nat" {
+resource "exoscale_elastic_ip" "nat" {
   count       = var.cluster_network.enabled ? 1 : 0
   zone        = var.region
   description = "${var.cluster_id} elastic IP for NAT gateway"
-  reverse_dns = "egress.${var.exoscale_domain_name}."
 }
 resource "exoscale_domain_record" "egress" {
   count       = var.cluster_network.enabled ? 1 : 0
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = "egress"
   ttl         = 60
   record_type = "A"
-  content     = exoscale_ipaddress.nat[0].ip_address
+  content     = exoscale_elastic_ip.nat[0].ip_address
 }
 
 resource "random_id" "lb" {
@@ -75,12 +72,12 @@ resource "random_id" "lb" {
 
 data "cidr_network" "lbnet" {
   count = var.cluster_network.enabled ? 1 : 0
-  ip    = data.exoscale_network.clusternet[0].start_ip
-  mask  = data.exoscale_network.clusternet[0].netmask
+  ip    = data.exoscale_private_network.clusternet[0].start_ip
+  mask  = data.exoscale_private_network.clusternet[0].netmask
 }
 
 locals {
-  network_id = var.cluster_network.enabled ? data.exoscale_network.clusternet[0].id : exoscale_network.lbnet[0].id
+  network_id = var.cluster_network.enabled ? data.exoscale_private_network.clusternet[0].id : exoscale_private_network.lbnet[0].id
   # If we create a privnet only for the LB VRRP traffic, we hardcode the CIDR
   # to 172.18.200.0/24.
   lbnet_cidr   = "172.18.200.0/24"
@@ -126,10 +123,9 @@ locals {
   ]
 }
 
-resource "exoscale_affinity" "lb" {
+resource "exoscale_anti_affinity_group" "lb" {
   name        = "${var.cluster_id}_lb"
   description = "${var.cluster_id} lb nodes"
-  type        = "host anti-affinity"
 }
 
 data "exoscale_compute_template" "ubuntu2004" {
@@ -172,24 +168,39 @@ data "exoscale_security_group" "cluster" {
   name  = var.cluster_security_group_names[count.index]
 }
 
-resource "exoscale_compute" "lb" {
-  count        = var.lb_count
-  display_name = local.instance_fqdns[count.index]
-  hostname     = random_id.lb[count.index].hex
-  key_pair     = var.ssh_key_name
-  zone         = var.region
-  template_id  = data.exoscale_compute_template.ubuntu2004.id
-  size         = "Medium"
-  disk_size    = 20
+resource "exoscale_compute_instance" "lb" {
+  count       = var.lb_count
+  name        = random_id.lb[count.index].hex
+  ssh_key     = var.ssh_key_name
+  zone        = var.region
+  template_id = data.exoscale_compute_template.ubuntu2004.id
+  type        = "standard.medium"
+  disk_size   = 20
 
   security_group_ids = concat(
     data.exoscale_security_group.cluster[*].id,
     [exoscale_security_group.load_balancers.id]
   )
-  affinity_group_ids = concat(
-    [exoscale_affinity.lb.id],
+  anti_affinity_group_ids = concat(
+    [exoscale_anti_affinity_group.lb.id],
     var.additional_affinity_group_ids
   )
+
+  # Always configure privnet managed by the module
+  # (either clusternet or lb_vrrp)
+  network_interface {
+    network_id = local.network_id
+    ip_address = cidrhost(local.network_cidr, 21 + count.index)
+  }
+
+  # Configure additional interfaces for each provided privnet
+  dynamic "network_interface" {
+    for_each = toset(var.additional_networks)
+
+    content {
+      network_id = network_interface.value
+    }
+  }
 
   user_data = format("#cloud-config\n%s", yamlencode(merge(
     local.common_user_data,
@@ -226,6 +237,7 @@ resource "exoscale_compute" "lb" {
     ignore_changes = [
       template_id,
       user_data,
+      elastic_ip_ids,
     ]
   }
 
@@ -235,26 +247,11 @@ resource "exoscale_compute" "lb" {
   ]
 }
 
-resource "exoscale_nic" "lb" {
-  count      = var.lb_count
-  compute_id = exoscale_compute.lb[count.index].id
-  network_id = local.network_id
-  # Privnet CIDR IPs starting from .21
-  # (IPs .1,.2,.3 will be assigned by Puppet profile_openshift4_gateway)
-  ip_address = cidrhost(local.network_cidr, 21 + count.index)
-}
-
-resource "exoscale_nic" "additional_network" {
-  count      = var.lb_count * length(var.additional_networks)
-  compute_id = exoscale_compute.lb[floor(count.index / length(var.additional_networks))].id
-  network_id = var.additional_networks[count.index % length(var.additional_networks)]
-}
-
 resource "exoscale_domain_record" "lb" {
   count       = var.lb_count
-  domain      = data.exoscale_domain.cluster.name
+  domain      = data.exoscale_domain.cluster.id
   name        = random_id.lb[count.index].hex
   ttl         = 600
   record_type = "A"
-  content     = exoscale_compute.lb[count.index].ip_address
+  content     = exoscale_compute_instance.lb[count.index].public_ip_address
 }
