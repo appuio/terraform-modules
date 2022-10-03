@@ -9,6 +9,7 @@ curl -s -X POST -H "X-AccessToken: ${CONTROL_VSHN_NET_TOKEN}" \
     \"fqdn\": \"${SERVER_FQDN}\",
     \"location\": \"exoscale\",
     \"region\": \"${SERVER_REGION}\",
+    \"zone\": \"${SERVER_ZONE}\",
     \"environment\": \"AppuioLbaas\",
     \"project\": \"lbaas\",
     \"role\": \"lb\",
