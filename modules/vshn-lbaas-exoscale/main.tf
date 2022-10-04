@@ -174,7 +174,7 @@ resource "exoscale_compute_instance" "lb" {
   ssh_key     = var.ssh_key_name
   zone        = var.region
   template_id = data.exoscale_compute_template.ubuntu2004.id
-  type        = "standard.medium"
+  type        = var.lb_type
   disk_size   = 20
 
   security_group_ids = concat(

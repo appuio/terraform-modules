@@ -21,6 +21,7 @@ The module provides variables to
 
 * control the count of LB VMs.
   Note that we don't recommend changing the count for the LBs from their default values.
+* customize the instance type of the LB VMs (by default we provision "Medium" Exoscale instances).
 * specify the cluster's id, Exoscale region, Exoscale-managed domain name, SSH key, api backends, router backends, and bootstrap node.
 * specify an existing Exoscale managed private network and host for the internal VIP in that network.
 * specify a list of security group ids which are allowed to access the LB's cluster-internal frontends.

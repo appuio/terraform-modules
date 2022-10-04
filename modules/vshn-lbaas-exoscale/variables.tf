@@ -60,6 +60,12 @@ variable "lb_count" {
   description = "The number of loadbalancers to create"
 }
 
+variable "lb_type" {
+  type        = string
+  default     = "standard.medium"
+  description = "The instance type to use for the LBs"
+}
+
 variable "control_vshn_net_token" {
   type        = string
   description = "The token is used to register the server with https://control.vshn.net/"
