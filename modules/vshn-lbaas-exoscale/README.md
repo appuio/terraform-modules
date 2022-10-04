@@ -24,7 +24,6 @@ The module provides variables to
 * specify the cluster's id, Exoscale region, Exoscale-managed domain name, SSH key, api backends, router backends, and bootstrap node.
 * specify an existing Exoscale managed private network and host for the internal VIP in that network.
 * specify a list of security group ids which are allowed to access the LB's cluster-internal frontends.
-* specify an Exoscale API Key and secret for Floaty
 * specify the username for the APPUiO hieradata Git repository (see next sections for details).
 * specify the team to assign the LBs to in Icinga.
 * provide an API token for control.vshn.net (see next sections for details).
@@ -34,7 +33,6 @@ The module provides variables to
 ## Required credentials
 
 * Exoscale IAM credentials for provisioning the Exoscale resources.
-* Exoscale IAM credentials for Floaty.
 * An API token for the control.vshn.net Servers API must be created on [control.vshn.net](https://control.vshn.net/tokens/_create/servers)
 * A project access token for the APPUiO hieradata repository must be created on [git.vshn.net](https://git.vshn.net/appuio/appuio_hieradata/-/settings/access_tokens)
   * The minimum required permissions for the project access token are `api` (to create MRs), `read_repository` (to clone the repo) and `write_repository` (to push to the repo).
