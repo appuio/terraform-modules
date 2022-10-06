@@ -170,7 +170,7 @@ data "exoscale_security_group" "cluster" {
 
 resource "exoscale_compute_instance" "lb" {
   count       = var.lb_count
-  name        = random_id.lb[count.index].hex
+  name        = local.instance_fqdns[count.index]
   ssh_key     = var.ssh_key_name
   zone        = var.region
   template_id = data.exoscale_compute_template.ubuntu2004.id
