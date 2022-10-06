@@ -20,7 +20,7 @@ resource "exoscale_security_group_rule" "load_balancers_tcp4" {
   security_group_id = exoscale_security_group.load_balancers.id
 
   type        = "INGRESS"
-  description = "${each.key} TCPv4"
+  description = each.value == "6443" ? "Kubernetes API" : "Ingress controller TCP"
   protocol    = "TCP"
   start_port  = each.value
   end_port    = each.value
@@ -33,7 +33,7 @@ resource "exoscale_security_group_rule" "load_balancers_tcp6" {
   security_group_id = exoscale_security_group.load_balancers.id
 
   type        = "INGRESS"
-  description = "${each.key} TCPv6"
+  description = each.value == "6443" ? "Kubernetes API" : "Ingress controller TCP"
   protocol    = "TCP"
   start_port  = each.value
   end_port    = each.value
@@ -46,7 +46,7 @@ resource "exoscale_security_group_rule" "load_balancers_udp4" {
   security_group_id = exoscale_security_group.load_balancers.id
 
   type        = "INGRESS"
-  description = "${each.key} UDPv4"
+  description = "Ingress controller UDP"
   protocol    = "UDP"
   start_port  = each.value
   end_port    = each.value
@@ -59,7 +59,7 @@ resource "exoscale_security_group_rule" "load_balancers_udp6" {
   security_group_id = exoscale_security_group.load_balancers.id
 
   type        = "INGRESS"
-  description = "${each.key} UDPv6"
+  description = "Ingress controller UDP"
   protocol    = "UDP"
   start_port  = each.value
   end_port    = each.value
@@ -72,7 +72,7 @@ resource "exoscale_security_group_rule" "load_balancers_machine_config_server" {
   security_group_id = exoscale_security_group.load_balancers.id
 
   type        = "INGRESS"
-  description = "Machine Config server from ${data.exoscale_security_group.cluster[count.index].name}"
+  description = "Machine Config server"
   protocol    = "TCP"
   start_port  = "22623"
   end_port    = "22623"
