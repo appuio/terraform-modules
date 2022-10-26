@@ -30,6 +30,7 @@ The module provides variables to
 * provide an API token for control.vshn.net (see next sections for details).
 * control whether HAproxy is configured to use PROXY protocol for the router backends
 * provide a list of additional Exoscale private networks to attach to the LBs
+* choose a dedicated deployment target
 
 ## Required credentials
 
