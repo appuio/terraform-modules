@@ -115,3 +115,9 @@ variable "additional_affinity_group_ids" {
   default     = []
   description = "List of additional affinity group IDs to configure on all lbs"
 }
+
+variable "deploy_target_id" {
+  type        = string
+  default     = ""
+  description = "ID of special deployment target, eg. dedicated hypervisors"
+}

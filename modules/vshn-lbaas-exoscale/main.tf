@@ -186,6 +186,8 @@ resource "exoscale_compute_instance" "lb" {
     var.additional_affinity_group_ids
   )
 
+  deploy_target_id = var.deploy_target_id
+
   # Always configure privnet managed by the module
   # (either clusternet or lb_vrrp)
   network_interface {
