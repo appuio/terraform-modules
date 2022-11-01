@@ -163,11 +163,6 @@ resource "null_resource" "register_lb" {
   }
 }
 
-data "exoscale_security_group" "cluster" {
-  count = length(var.cluster_security_group_names)
-  name  = var.cluster_security_group_names[count.index]
-}
-
 resource "exoscale_compute_instance" "lb" {
   count       = var.lb_count
   name        = local.instance_fqdns[count.index]
@@ -178,7 +173,7 @@ resource "exoscale_compute_instance" "lb" {
   disk_size   = 20
 
   security_group_ids = concat(
-    data.exoscale_security_group.cluster[*].id,
+    var.cluster_security_group_ids,
     [exoscale_security_group.load_balancers.id]
   )
   anti_affinity_group_ids = concat(

@@ -67,7 +67,7 @@ resource "exoscale_security_group_rule" "load_balancers_udp6" {
 }
 
 resource "exoscale_security_group_rule" "load_balancers_machine_config_server" {
-  count = length(data.exoscale_security_group.cluster)
+  count = length(var.cluster_security_group_ids)
 
   security_group_id = exoscale_security_group.load_balancers.id
 
@@ -77,5 +77,5 @@ resource "exoscale_security_group_rule" "load_balancers_machine_config_server" {
   start_port  = "22623"
   end_port    = "22623"
 
-  user_security_group_id = data.exoscale_security_group.cluster[count.index].id
+  user_security_group_id = var.cluster_security_group_ids[count.index]
 }
