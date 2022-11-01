@@ -39,13 +39,13 @@ variable "region" {
   description = "Region where to deploy nodes"
 }
 
-variable "cluster_security_group_names" {
+variable "cluster_security_group_ids" {
   type        = list(string)
-  description = "Security group names for which the LBs should allow traffic on the Machine Config server port"
+  description = "Security group ids for which the LBs should allow traffic on the Machine Config server port"
 
   validation {
-    condition     = length(var.cluster_security_group_names) > 0
-    error_message = "You must specify at least one cluster security group."
+    condition     = length(var.cluster_security_group_ids) > 0
+    error_message = "You must specify at least one cluster security group id."
   }
 }
 

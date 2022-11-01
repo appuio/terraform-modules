@@ -22,8 +22,8 @@ output "hieradata_mr_url" {
   value = module.hiera[*].hieradata_mr_url
 }
 
-output "security_group_name" {
-  value = exoscale_security_group.load_balancers.name
+output "security_group_id" {
+  value = exoscale_security_group.load_balancers.id
 }
 
 output "internal_vip" {
