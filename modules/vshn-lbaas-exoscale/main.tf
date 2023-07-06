@@ -131,7 +131,7 @@ resource "exoscale_anti_affinity_group" "lb" {
   description = "${var.cluster_id} lb nodes"
 }
 
-data "exoscale_compute_template" "ubuntu2004" {
+data "exoscale_template" "ubuntu2004" {
   zone = var.region
   name = "Linux Ubuntu 20.04 LTS 64-bit"
 }
@@ -171,7 +171,7 @@ resource "exoscale_compute_instance" "lb" {
   name        = local.instance_fqdns[count.index]
   ssh_key     = var.ssh_key_name
   zone        = var.region
-  template_id = data.exoscale_compute_template.ubuntu2004.id
+  template_id = data.exoscale_template.ubuntu2004.id
   type        = var.lb_type
   disk_size   = 20
 
