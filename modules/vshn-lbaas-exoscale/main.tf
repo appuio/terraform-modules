@@ -22,6 +22,7 @@ resource "exoscale_private_network" "lbnet" {
 resource "exoscale_elastic_ip" "api" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for API"
+  reverse_dns = "api.${var.exoscale_domain_name}"
 }
 resource "exoscale_domain_record" "api" {
   domain      = data.exoscale_domain.cluster.id
@@ -34,6 +35,7 @@ resource "exoscale_domain_record" "api" {
 resource "exoscale_elastic_ip" "ingress" {
   zone        = var.region
   description = "${var.cluster_id} elastic IP for ingress controller"
+  reverse_dns = "ingress.${var.exoscale_domain_name}"
 }
 resource "exoscale_domain_record" "ingress" {
   domain      = data.exoscale_domain.cluster.id
@@ -54,6 +56,7 @@ resource "exoscale_elastic_ip" "nat" {
   count       = var.cluster_network.enabled ? 1 : 0
   zone        = var.region
   description = "${var.cluster_id} elastic IP for NAT gateway"
+  reverse_dns = "egress.${var.exoscale_domain_name}"
 }
 resource "exoscale_domain_record" "egress" {
   count       = var.cluster_network.enabled ? 1 : 0
