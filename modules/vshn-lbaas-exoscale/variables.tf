@@ -71,6 +71,16 @@ variable "control_vshn_net_token" {
   description = "The token is used to register the server with https://control.vshn.net/"
 }
 
+variable "lb_exoscale_api_key" {
+  type        = string
+  description = "API key for Floaty"
+}
+
+variable "lb_exoscale_api_secret" {
+  type        = string
+  description = "API secret for Floaty"
+}
+
 variable "hieradata_repo_user" {
   type        = string
   description = "User used to check out the hieradata git repo"

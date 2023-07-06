@@ -7,19 +7,6 @@ locals {
   ) : ""
   nat_vip = var.cluster_network.enabled ? exoscale_elastic_ip.nat[0].ip_address : ""
 }
-
-resource "exoscale_iam_access_key" "floaty" {
-  name = "${var.cluster_id}_floaty"
-  operations = [
-    "attach-instance-to-elastic-ip",
-    "detach-instance-from-elastic-ip",
-    "get-instance",
-    "list-instances",
-    "list-private-networks",
-    "get-operation",
-  ]
-}
-
 module "hiera" {
   count = var.lb_count > 0 ? 1 : 0
 
@@ -46,10 +33,8 @@ module "hiera" {
   lb_api_credentials = {
     cloudscale = null
     exoscale = {
-      # Use `nonsensitive` so we get useful apply diffs for the hieradata (if
-      # we already have a copy available locally).
-      key    = nonsensitive(exoscale_iam_access_key.floaty.key)
-      secret = nonsensitive(exoscale_iam_access_key.floaty.secret)
+      key    = var.lb_exoscale_api_key
+      secret = var.lb_exoscale_api_secret
     }
   }
 }
