@@ -15,11 +15,15 @@ profile_openshift4_gateway::private_interfaces:
   - ${if}
 %{ endfor ~}
 profile_openshift4_gateway::floating_addresses:
+%{ if api_vip != "" ~}
   api: ${api_vip}
+%{ endif ~}
 %{ if nat_vip != "" ~}
   nat: ${nat_vip}
 %{ endif ~}
+%{ if router_vip != "" ~}
   router: ${router_vip}
+%{ endif ~}
 profile_openshift4_gateway::floating_address_provider: ${cloud_provider}
 %{ if internal_vip != "" ~}
 profile_openshift4_gateway::internal_vip: ${internal_vip}
@@ -42,6 +46,9 @@ profile_openshift4_gateway::backends:
 %{ endfor ~}
 %{ if enable_proxy_protocol ~}
 profile_openshift4_gateway::enable_proxy_protocol: true
+%{ endif ~}
+%{ if !enable_haproxy ~}
+profile_openshift4_gateway::enable_haproxy: false
 %{ endif ~}
 %{ if team != "" ~}
 profile_icinga2::host::hiera_vars:

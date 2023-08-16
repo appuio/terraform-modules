@@ -105,3 +105,9 @@ variable "enable_proxy_protocol" {
   description = "Enable the PROXY protocol for the Router backends. WARNING: Connections will fail until you enable the same on the OpenShift router as well"
   default     = false
 }
+
+variable "enable_haproxy" {
+  type        = bool
+  description = "Control whether the HAProxy LB is configured. Set this to true if you're using cloudscale.ch managed LBs"
+  default     = false
+}
