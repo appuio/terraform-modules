@@ -41,6 +41,7 @@ resource "local_file" "lb_hieradata" {
         "router" = var.router_backends[*],
       }
       "enable_proxy_protocol" = var.enable_proxy_protocol
+      "enable_haproxy"        = var.enable_haproxy
       "bootstrap_node"        = var.bootstrap_node
       "team"                  = var.team
   })
