@@ -14,6 +14,28 @@ resource "exoscale_security_group" "load_balancers" {
   description = "${var.cluster_id} load balancer VMs"
 }
 
+resource "exoscale_security_group_rule" "load_balancers_ssh_v4" {
+  security_group_id = exoscale_security_group.load_balancers.id
+
+  description = "SSH Access from anywhere on the LBs"
+  type        = "INGRESS"
+  protocol    = "TCP"
+  start_port  = "22"
+  end_port    = "22"
+  cidr        = "0.0.0.0/0"
+}
+
+resource "exoscale_security_group_rule" "load_balancers_ssh_v6" {
+  security_group_id = exoscale_security_group.load_balancers.id
+
+  description = "SSH Access from anywhere on the LBs"
+  type        = "INGRESS"
+  protocol    = "TCP"
+  start_port  = "22"
+  end_port    = "22"
+  cidr        = "::/0"
+}
+
 resource "exoscale_security_group_rule" "load_balancers_tcp4" {
   for_each = local.open_ports_tcp
 
