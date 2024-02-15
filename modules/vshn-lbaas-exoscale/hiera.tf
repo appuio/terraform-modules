@@ -7,6 +7,49 @@ locals {
   ) : ""
   nat_vip = var.cluster_network.enabled ? exoscale_elastic_ip.nat[0].ip_address : ""
 }
+
+resource "exoscale_iam_role" "floaty" {
+  name        = "${var.cluster_id}_floaty"
+  description = "Exoscale IAMv3 role for Floaty for ${var.cluster_id}"
+  // TBD if we want to set `editable=false` -- note that this also prevents
+  // updates via Terraform
+  editable = true
+
+  policy = {
+    default_service_strategy = "deny"
+
+    services = {
+      compute-legacy = {
+        type = "rules"
+        rules = [
+          {
+            action     = "allow"
+            expression = "operation in ['compute-add-ip-to-nic', 'compute-list-nics', 'compute-list-resource-details', 'compute-list-virtual-machines', 'compute-query-async-job-result', 'compute-remove-ip-from-nic']"
+          }
+        ]
+      }
+      compute = {
+        type = "rules"
+        rules = [
+          {
+            action     = "allow"
+            expression = "operation in ['get-instance', 'list-instances', 'list-elastic-ips']"
+          },
+          {
+            action     = "allow"
+            expression = "operation in ['attach-instance-to-elastic-ip', 'detach-instance-from-elastic-ip'] && resources.elastic_ip.ip in ['${exoscale_elastic_ip.api.ip_address}', '${exoscale_elastic_ip.ingress.ip_address}']"
+          }
+        ]
+      }
+    }
+  }
+}
+
+resource "exoscale_iam_api_key" "floaty" {
+  name    = "${var.cluster_id}_floaty"
+  role_id = exoscale_iam_role.floaty.id
+}
+
 module "hiera" {
   count = var.lb_count > 0 ? 1 : 0
 
@@ -33,8 +76,8 @@ module "hiera" {
   lb_api_credentials = {
     cloudscale = null
     exoscale = {
-      key    = var.lb_exoscale_api_key
-      secret = var.lb_exoscale_api_secret
+      key    = exoscale_iam_api_key.floaty.key
+      secret = nonsensitive(exoscale_iam_api_key.floaty.secret)
     }
   }
 }
