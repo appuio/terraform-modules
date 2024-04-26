@@ -1,5 +1,5 @@
 resource "cloudscale_floating_ip" "api_vip" {
-  count       = var.lb_count != 0 ? 1 : 0
+  count       = var.lb_count != 0 && !var.use_existing_vips ? 1 : 0
   ip_version  = 4
   region_slug = var.region
   reverse_ptr = "api.${var.node_name_suffix}"
@@ -13,8 +13,14 @@ resource "cloudscale_floating_ip" "api_vip" {
   }
 }
 
+data "cloudscale_floating_ip" "api_vip" {
+  count       = var.use_existing_vips ? 1 : 0
+  ip_version  = 4
+  reverse_ptr = "api.${var.node_name_suffix}"
+}
+
 resource "cloudscale_floating_ip" "router_vip" {
-  count       = var.lb_count != 0 ? 1 : 0
+  count       = var.lb_count != 0 && !var.use_existing_vips ? 1 : 0
   ip_version  = 4
   region_slug = var.region
   reverse_ptr = "ingress.${var.node_name_suffix}"
@@ -28,8 +34,14 @@ resource "cloudscale_floating_ip" "router_vip" {
   }
 }
 
+data "cloudscale_floating_ip" "router_vip" {
+  count       = var.use_existing_vips ? 1 : 0
+  ip_version  = 4
+  reverse_ptr = "ingress.${var.node_name_suffix}"
+}
+
 resource "cloudscale_floating_ip" "nat_vip" {
-  count       = var.lb_count != 0 ? 1 : 0
+  count       = var.lb_count != 0 && !var.use_existing_vips ? 1 : 0
   ip_version  = 4
   region_slug = var.region
   reverse_ptr = "egress.${var.node_name_suffix}"
@@ -41,6 +53,12 @@ resource "cloudscale_floating_ip" "nat_vip" {
       next_hop,
     ]
   }
+}
+
+data "cloudscale_floating_ip" "nat_vip" {
+  count       = var.use_existing_vips ? 1 : 0
+  ip_version  = 4
+  reverse_ptr = "egress.${var.node_name_suffix}"
 }
 
 resource "random_id" "lb" {
@@ -57,6 +75,10 @@ resource "cloudscale_server_group" "lb" {
 }
 
 locals {
+  api_vip    = var.use_existing_vips ? data.cloudscale_floating_ip.api_vip[0] : cloudscale_floating_ip.api_vip[0]
+  router_vip = var.use_existing_vips ? data.cloudscale_floating_ip.router_vip[0] : cloudscale_floating_ip.router_vip[0]
+  nat_vip    = var.use_existing_vips ? data.cloudscale_floating_ip.nat_vip[0] : cloudscale_floating_ip.nat_vip[0]
+
   instance_fqdns = formatlist("%s.${var.node_name_suffix}", random_id.lb[*].hex)
 
   common_user_data = {

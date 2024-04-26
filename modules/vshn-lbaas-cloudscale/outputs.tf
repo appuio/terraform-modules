@@ -1,13 +1,13 @@
 output "api_vip" {
-  value = cloudscale_floating_ip.api_vip
+  value = local.api_vip
 }
 
 output "nat_vip" {
-  value = cloudscale_floating_ip.nat_vip
+  value = local.nat_vip
 }
 
 output "router_vip" {
-  value = cloudscale_floating_ip.router_vip
+  value = local.router_vip
 }
 
 output "server_names" {

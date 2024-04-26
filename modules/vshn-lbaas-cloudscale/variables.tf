@@ -106,3 +106,9 @@ variable "enable_proxy_protocol" {
   description = "Enable the PROXY protocol for the Router backends. WARNING: Connections will fail until you enable the same on the OpenShift router as well"
   default     = false
 }
+
+variable "use_existing_vips" {
+  type        = bool
+  description = "Use existing floating IPs for api_vip, router_vip and nat_vip. Manually set the reverse DNS info, so the correct data source is found."
+  default     = false
+}
