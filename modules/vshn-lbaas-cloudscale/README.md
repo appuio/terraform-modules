@@ -23,6 +23,7 @@ The module provides variables to
 * specify a cloudscale.ch API secret for Floaty
 * specify the username for the APPUiO hieradata Git repository (see next sections for details).
 * provide an API token for control.vshn.net (see next sections for details).
+* use pre-existing cloudscale floating IPs for api, ingress and egress.
 
 ## Required credentials
 

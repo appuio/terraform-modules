@@ -17,10 +17,10 @@ module "hiera" {
   ingress_controller    = var.ingress_controller
   lb_names              = random_id.lb[*].hex
   hieradata_repo_user   = var.hieradata_repo_user
-  api_vip               = cidrhost(cloudscale_floating_ip.api_vip[0].network, 0)
+  api_vip               = cidrhost(local.api_vip.network, 0)
   internal_vip          = var.internal_vip
-  nat_vip               = cidrhost(cloudscale_floating_ip.nat_vip[0].network, 0)
-  router_vip            = cidrhost(cloudscale_floating_ip.router_vip[0].network, 0)
+  nat_vip               = cidrhost(local.nat_vip.network, 0)
+  router_vip            = cidrhost(local.router_vip.network, 0)
   team                  = var.team
   enable_proxy_protocol = var.enable_proxy_protocol
 
