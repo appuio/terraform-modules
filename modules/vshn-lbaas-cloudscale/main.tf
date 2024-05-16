@@ -75,9 +75,9 @@ resource "cloudscale_server_group" "lb" {
 }
 
 locals {
-  api_vip    = var.use_existing_vips ? data.cloudscale_floating_ip.api_vip[0] : cloudscale_floating_ip.api_vip[0]
-  router_vip = var.use_existing_vips ? data.cloudscale_floating_ip.router_vip[0] : cloudscale_floating_ip.router_vip[0]
-  nat_vip    = var.use_existing_vips ? data.cloudscale_floating_ip.nat_vip[0] : cloudscale_floating_ip.nat_vip[0]
+  api_vip    = var.use_existing_vips ? data.cloudscale_floating_ip.api_vip : cloudscale_floating_ip.api_vip
+  router_vip = var.use_existing_vips ? data.cloudscale_floating_ip.router_vip : cloudscale_floating_ip.router_vip
+  nat_vip    = var.use_existing_vips ? data.cloudscale_floating_ip.nat_vip : cloudscale_floating_ip.nat_vip
 
   instance_fqdns = formatlist("%s.${var.node_name_suffix}", random_id.lb[*].hex)
 
