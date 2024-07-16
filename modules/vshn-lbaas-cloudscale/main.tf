@@ -1,5 +1,5 @@
 resource "cloudscale_floating_ip" "api_vip" {
-  count       = var.lb_count != 0 && !var.use_existing_vips ? 1 : 0
+  count       = var.lb_count != 0 && !var.use_existing_vips && var.enable_api_vip ? 1 : 0
   ip_version  = 4
   region_slug = var.region
   reverse_ptr = "api.${var.node_name_suffix}"
@@ -20,7 +20,7 @@ data "cloudscale_floating_ip" "api_vip" {
 }
 
 resource "cloudscale_floating_ip" "router_vip" {
-  count       = var.lb_count != 0 && !var.use_existing_vips ? 1 : 0
+  count       = var.lb_count != 0 && !var.use_existing_vips && var.enable_router_vip ? 1 : 0
   ip_version  = 4
   region_slug = var.region
   reverse_ptr = "ingress.${var.node_name_suffix}"
@@ -41,7 +41,7 @@ data "cloudscale_floating_ip" "router_vip" {
 }
 
 resource "cloudscale_floating_ip" "nat_vip" {
-  count       = var.lb_count != 0 && !var.use_existing_vips ? 1 : 0
+  count       = var.lb_count != 0 && !var.use_existing_vips && var.enable_nat_vip ? 1 : 0
   ip_version  = 4
   region_slug = var.region
   reverse_ptr = "egress.${var.node_name_suffix}"
