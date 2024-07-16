@@ -80,6 +80,12 @@ variable "internal_vip" {
   default     = ""
 }
 
+variable "internal_router_vip" {
+  type        = string
+  description = "Virtual IP for the ingress controller/application router in the internal network"
+  default     = ""
+}
+
 variable "api_vip" {
   type        = string
   description = "Floating IP for the Kubernetes/OpenShift API"
