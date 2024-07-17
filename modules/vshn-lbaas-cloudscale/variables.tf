@@ -112,3 +112,21 @@ variable "use_existing_vips" {
   description = "Use existing floating IPs for api_vip, router_vip and nat_vip. Manually set the reverse DNS info, so the correct data source is found."
   default     = false
 }
+
+variable "enable_api_vip" {
+  type        = bool
+  description = "Whether to configure a cloudscale floating IP for the API"
+  default     = true
+}
+
+variable "enable_router_vip" {
+  type        = bool
+  description = "Whether to configure a cloudscale floating IP for the router"
+  default     = true
+}
+
+variable "enable_nat_vip" {
+  type        = bool
+  description = "Whether to configure a cloudscale floating IP for the default gateway NAT"
+  default     = true
+}
