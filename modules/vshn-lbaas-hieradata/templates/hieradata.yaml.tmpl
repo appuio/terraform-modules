@@ -28,6 +28,9 @@ profile_openshift4_gateway::floating_address_provider: ${cloud_provider}
 %{ if internal_vip != "" ~}
 profile_openshift4_gateway::internal_vip: ${internal_vip}
 %{ endif ~}
+%{ if internal_router_vip != "" ~}
+profile_openshift4_gateway::internal_router_vip: ${internal_router_vip}
+%{ endif ~}
 profile_openshift4_gateway::floating_address_settings:
 %{ for k, v in api_credentials ~}
   ${k}: ${v}

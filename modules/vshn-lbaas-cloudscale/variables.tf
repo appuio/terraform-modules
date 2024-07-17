@@ -90,6 +90,12 @@ variable "internal_vip" {
   default     = ""
 }
 
+variable "internal_router_vip" {
+  type        = string
+  description = "Virtual IP for the ingress controller/application router in the internal network"
+  default     = ""
+}
+
 variable "team" {
   type        = string
   description = "Team to assign the load balancers to in Icinga. All lower case."

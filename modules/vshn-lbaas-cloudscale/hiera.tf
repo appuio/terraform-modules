@@ -19,6 +19,7 @@ module "hiera" {
   hieradata_repo_user   = var.hieradata_repo_user
   api_vip               = var.enable_api_vip ? cidrhost(local.api_vip[0].network, 0) : ""
   internal_vip          = var.internal_vip
+  internal_router_vip   = var.internal_router_vip
   nat_vip               = var.enable_nat_vip ? cidrhost(local.nat_vip[0].network, 0) : ""
   router_vip            = var.enable_router_vip ? cidrhost(local.router_vip[0].network, 0) : ""
   team                  = var.team
