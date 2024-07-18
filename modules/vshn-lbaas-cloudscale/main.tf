@@ -8,7 +8,6 @@ resource "cloudscale_floating_ip" "api_vip" {
     ignore_changes = [
       # Will be handled by Keepalived (Ursula)
       server,
-      next_hop,
     ]
   }
 }
@@ -29,7 +28,6 @@ resource "cloudscale_floating_ip" "router_vip" {
     ignore_changes = [
       # Will be handled by Keepalived (Ursula)
       server,
-      next_hop,
     ]
   }
 }
@@ -50,7 +48,6 @@ resource "cloudscale_floating_ip" "nat_vip" {
     ignore_changes = [
       # Will be handled by Keepalived (Ursula)
       server,
-      next_hop,
     ]
   }
 }
