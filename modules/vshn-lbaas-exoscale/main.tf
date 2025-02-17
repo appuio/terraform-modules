@@ -93,7 +93,7 @@ locals {
     "package_upgrade" = true,
     "runcmd" = [
       "sleep '5'",
-      "wget -O /tmp/puppet-source.deb https://apt.puppetlabs.com/puppet7-release-focal.deb",
+      "wget -O /tmp/puppet-source.deb https://apt.puppetlabs.com/puppet7-release-jammy.deb",
       "dpkg -i /tmp/puppet-source.deb",
       "rm /tmp/puppet-source.deb",
       "apt-get update",
@@ -131,9 +131,9 @@ resource "exoscale_anti_affinity_group" "lb" {
   description = "${var.cluster_id} lb nodes"
 }
 
-data "exoscale_template" "ubuntu2004" {
+data "exoscale_template" "ubuntu2204" {
   zone = var.region
-  name = "Linux Ubuntu 20.04 LTS 64-bit"
+  name = "Linux Ubuntu 22.04 LTS 64-bit"
 }
 
 resource "null_resource" "register_lb" {
@@ -171,7 +171,7 @@ resource "exoscale_compute_instance" "lb" {
   name        = local.instance_fqdns[count.index]
   ssh_key     = var.ssh_key_name
   zone        = var.region
-  template_id = data.exoscale_template.ubuntu2004.id
+  template_id = data.exoscale_template.ubuntu2204.id
   type        = var.lb_type
   disk_size   = 20
 
