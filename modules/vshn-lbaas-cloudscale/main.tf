@@ -83,7 +83,7 @@ locals {
     "package_upgrade" = true,
     "runcmd" = [
       "sleep '5'",
-      "wget -O /tmp/puppet-source.deb https://apt.puppetlabs.com/puppet7-release-focal.deb",
+      "wget -O /tmp/puppet-source.deb https://apt.puppetlabs.com/puppet7-release-jammy.deb",
       "dpkg -i /tmp/puppet-source.deb",
       "rm /tmp/puppet-source.deb",
       "apt-get update",
@@ -143,7 +143,7 @@ resource "cloudscale_server" "lb" {
   name                           = local.instance_fqdns[count.index]
   zone_slug                      = "${var.region}1"
   flavor_slug                    = var.lb_flavor
-  image_slug                     = "ubuntu-20.04"
+  image_slug                     = "ubuntu-22.04"
   server_group_ids               = var.lb_count != 0 ? [cloudscale_server_group.lb[0].id] : []
   volume_size_gb                 = 50
   ssh_keys                       = var.ssh_keys
