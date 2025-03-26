@@ -173,7 +173,7 @@ resource "exoscale_compute_instance" "lb" {
   zone        = var.region
   template_id = data.exoscale_template.ubuntu2204.id
   type        = var.lb_type
-  disk_size   = 20
+  disk_size   = var.disk_size
 
   security_group_ids = concat(
     var.cluster_security_group_ids,
