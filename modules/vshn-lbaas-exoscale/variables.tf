@@ -121,3 +121,9 @@ variable "deploy_target_id" {
   default     = ""
   description = "ID of special deployment target, eg. dedicated hypervisors"
 }
+
+variable "disk_size" {
+  type        = number
+  default     = 20
+  description = "LB VM disk size"
+}
