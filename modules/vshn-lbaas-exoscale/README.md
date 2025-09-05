@@ -10,7 +10,7 @@ The Terraform module in this repository provisions all the infrastructure which 
 
 The module manages the VMs (cloud-init configs) and floating IPs for a highly-available OpenShift 4 cluster.
 
-The LB VMs run Ubuntu LTS 20.04 and are managed and configured via the VSHN Puppet infrastructure.
+The LB VMs run Ubuntu LTS 22.04 and are managed and configured via the VSHN Puppet infrastructure.
 Those VMs run HAproxy, keepalived, and [Floaty](https://github.com/vshn/floaty/) to provide a highly-available load balancer for the cluster.
 
 By default, the module expects that clusters on Exoscale are provisioned with public interfaces and access is managed with Exoscale security groups.
