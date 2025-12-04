@@ -2,7 +2,7 @@
 
 set -ex
 
-curl -s -X POST -H "X-AccessToken: ${CONTROL_VSHN_NET_TOKEN}" \
+out=$(curl -w "\n\nHTTP_CODE:%{http_code}" -s -X POST -H "X-AccessToken: ${CONTROL_VSHN_NET_TOKEN}" \
   https://control.vshn.net/api/servers/1/appuio/ \
   -d "{
     \"customer\": \"appuio\",
@@ -13,4 +13,8 @@ curl -s -X POST -H "X-AccessToken: ${CONTROL_VSHN_NET_TOKEN}" \
     \"project\": \"lbaas\",
     \"role\": \"lb\",
     \"stage\": \"${CLUSTER_ID}\"
-  }"
+  }")
+
+grep -q "HTTP_CODE:2" <<EOF || (echo "Failed to register server:\n\n$out" >&2; exit 1)
+$out
+EOF
