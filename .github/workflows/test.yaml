@@ -8,7 +8,7 @@ jobs:
   provide_modules:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - id: set-matrix
         run: echo "::set-output name=matrix::$(find modules -mindepth 1 -maxdepth 1 -type d | jq -R | jq -sc)"
     outputs:
@@ -24,7 +24,7 @@ jobs:
       run:
         working-directory: ${{ matrix.module }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Extract Terraform version from constraints in module
         run: echo TF_VERSION=$(grep "^[[:space:]]\+required_version = \"" providers.tf | cut -d= -f2- | tr -d ' "') >> $GITHUB_ENV
       - uses: hashicorp/setup-terraform@v3
