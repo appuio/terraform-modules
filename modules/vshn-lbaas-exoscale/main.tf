@@ -169,7 +169,7 @@ resource "null_resource" "register_lb" {
 resource "exoscale_compute_instance" "lb" {
   count       = var.lb_count
   name        = local.instance_fqdns[count.index]
-  ssh_key     = var.ssh_key_name
+  ssh_keys    = [var.ssh_key_name]
   zone        = var.region
   template_id = data.exoscale_template.ubuntu2204.id
   type        = var.lb_type
