@@ -138,7 +138,7 @@ data "exoscale_template" "ubuntu2204" {
 
 resource "null_resource" "register_lb" {
   triggers = {
-    # Refresh resource when the script changes -- this is probaby not required for production
+    # Refresh resource when the script changes -- this is not required for production.
     # Uncomment this trigger if you want to test changes to `files/register-server.sh`
     # script_sha1 = filesha1("${path.module}/files/register-server.sh")
     # Refresh resource when lb fqdn changes
