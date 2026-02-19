@@ -244,6 +244,7 @@ resource "exoscale_compute_instance" "lb" {
       template_id,
       user_data,
       elastic_ip_ids,
+      ssh_keys,
     ]
   }
 
