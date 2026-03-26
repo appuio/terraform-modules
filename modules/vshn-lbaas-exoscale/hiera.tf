@@ -19,15 +19,6 @@ resource "exoscale_iam_role" "floaty" {
     default_service_strategy = "deny"
 
     services = {
-      compute-legacy = {
-        type = "rules"
-        rules = [
-          {
-            action     = "allow"
-            expression = "operation in ['compute-add-ip-to-nic', 'compute-list-nics', 'compute-list-resource-details', 'compute-list-virtual-machines', 'compute-query-async-job-result', 'compute-remove-ip-from-nic']"
-          }
-        ]
-      }
       compute = {
         type = "rules"
         rules = [
