@@ -7,6 +7,8 @@ locals {
 
   public_interface   = var.cloud_provider == "cloudscale" ? "ens3" : "eth0"
   private_interfaces = var.cloud_provider == "cloudscale" ? ["ens4"] : ["eth1"]
+
+  enable_haproxy = var.api_vip != "" || var.internal_vip != "" || var.internal_router_vip != "" || var.router_vip != ""
 }
 
 resource "gitfile_checkout" "appuio_hieradata" {
@@ -44,6 +46,7 @@ resource "local_file" "lb_hieradata" {
       "enable_proxy_protocol" = var.enable_proxy_protocol
       "bootstrap_node"        = var.bootstrap_node
       "team"                  = var.team
+      "enable_haproxy"        = local.enable_haproxy
   })
 
   filename             = "${path.cwd}/appuio_hieradata/lbaas/${var.cluster_id}.yaml"
