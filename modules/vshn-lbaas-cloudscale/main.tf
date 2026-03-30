@@ -13,7 +13,7 @@ resource "cloudscale_floating_ip" "api_vip" {
 }
 
 data "cloudscale_floating_ip" "api_vip" {
-  count       = var.use_existing_vips ? 1 : 0
+  count       = var.use_existing_vips && var.enable_api_vip ? 1 : 0
   ip_version  = 4
   reverse_ptr = "api.${var.node_name_suffix}"
 }
@@ -33,7 +33,7 @@ resource "cloudscale_floating_ip" "router_vip" {
 }
 
 data "cloudscale_floating_ip" "router_vip" {
-  count       = var.use_existing_vips ? 1 : 0
+  count       = var.use_existing_vips && var.enable_router_vip ? 1 : 0
   ip_version  = 4
   reverse_ptr = "ingress.${var.node_name_suffix}"
 }
