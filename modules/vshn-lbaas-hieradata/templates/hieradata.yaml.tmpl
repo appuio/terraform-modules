@@ -14,6 +14,9 @@ profile_openshift4_gateway::private_interfaces:
 %{ for if in private_interfaces ~}
   - ${if}
 %{ endfor ~}
+%{ if !enable_haproxy ~}
+profile_openshift4_gateway::enable_haproxy: false
+%{ endif ~}
 profile_openshift4_gateway::floating_addresses:
 %{ if api_vip != "" ~}
   api: ${api_vip}
