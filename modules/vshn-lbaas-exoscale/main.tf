@@ -2,15 +2,7 @@ data "exoscale_domain" "cluster" {
   name = var.exoscale_domain_name
 }
 
-data "exoscale_private_network" "clusternet" {
-  count = var.cluster_network.enabled ? 1 : 0
-  name  = var.cluster_network.name
-  zone  = var.region
-}
-
 resource "exoscale_private_network" "lbnet" {
-  count = var.cluster_network.enabled ? 0 : 1
-
   zone        = var.region
   name        = "${var.cluster_id}_lb_vrrp"
   description = "${var.cluster_id} private network for LB VRRP traffic"
@@ -52,39 +44,15 @@ resource "exoscale_domain_record" "wildcard" {
   content     = exoscale_domain_record.ingress.hostname
 }
 
-resource "exoscale_elastic_ip" "nat" {
-  count       = var.cluster_network.enabled ? 1 : 0
-  zone        = var.region
-  description = "${var.cluster_id} elastic IP for NAT gateway"
-  reverse_dns = "egress.${var.exoscale_domain_name}"
-}
-resource "exoscale_domain_record" "egress" {
-  count       = var.cluster_network.enabled ? 1 : 0
-  domain      = data.exoscale_domain.cluster.id
-  name        = "egress"
-  ttl         = 60
-  record_type = "A"
-  content     = exoscale_elastic_ip.nat[0].ip_address
-}
-
 resource "random_id" "lb" {
   count       = var.lb_count
   prefix      = "lb-"
   byte_length = 1
 }
 
-data "cidr_network" "lbnet" {
-  count = var.cluster_network.enabled ? 1 : 0
-  ip    = data.exoscale_private_network.clusternet[0].start_ip
-  mask  = data.exoscale_private_network.clusternet[0].netmask
-}
-
 locals {
-  network_id = var.cluster_network.enabled ? data.exoscale_private_network.clusternet[0].id : exoscale_private_network.lbnet[0].id
-  # If we create a privnet only for the LB VRRP traffic, we hardcode the CIDR
-  # to 172.18.200.0/24.
-  lbnet_cidr   = "172.18.200.0/24"
-  network_cidr = var.cluster_network.enabled ? data.cidr_network.lbnet[0].prefix : local.lbnet_cidr
+  # Hardcoded CIDR for privnet for the LB VRRP traffic.
+  lbnet_cidr = "172.18.200.0/24"
 
   instance_fqdns = formatlist("%s.${var.exoscale_domain_name}", random_id.lb[*].hex)
 
@@ -195,8 +163,8 @@ resource "exoscale_compute_instance" "lb" {
   # Always configure privnet managed by the module
   # (either clusternet or lb_vrrp)
   network_interface {
-    network_id = local.network_id
-    ip_address = cidrhost(local.network_cidr, 21 + count.index)
+    network_id = exoscale_private_network.lbnet.id
+    ip_address = cidrhost(local.lbnet_cidr, 21 + count.index)
   }
 
   # Configure additional interfaces for each provided privnet
