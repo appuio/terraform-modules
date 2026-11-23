@@ -101,3 +101,15 @@ resource "exoscale_security_group_rule" "load_balancers_machine_config_server" {
 
   user_security_group_id = var.cluster_security_group_ids[count.index]
 }
+
+resource "exoscale_security_group_rule" "load_balancers_conntrackd" {
+  security_group_id = exoscale_security_group.load_balancers.id
+
+  type        = "INGRESS"
+  description = "conntrackd"
+  protocol    = "UDP"
+  start_port  = "3780"
+  end_port    = "3780"
+
+  user_security_group_id = exoscale_security_group.load_balancers.id
+}
