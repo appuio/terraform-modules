@@ -47,6 +47,7 @@ resource "local_file" "lb_hieradata" {
       "bootstrap_node"        = var.bootstrap_node
       "team"                  = var.team
       "enable_haproxy"        = local.enable_haproxy
+      "extra_hieradata"       = var.extra_hieradata
   })
 
   filename             = "${path.cwd}/appuio_hieradata/lbaas/${var.cluster_id}.yaml"

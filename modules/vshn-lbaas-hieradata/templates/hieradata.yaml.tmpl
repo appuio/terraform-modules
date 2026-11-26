@@ -53,6 +53,9 @@ profile_openshift4_gateway::backends:
 %{ if enable_proxy_protocol ~}
 profile_openshift4_gateway::enable_proxy_protocol: true
 %{ endif ~}
+%{ for k, v in extra_hieradata ~}
+${k}: ${v}
+%{ endfor ~}
 %{ if team != "" ~}
 profile_icinga2::host::hiera_vars:
   team: ${team}
