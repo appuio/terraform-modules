@@ -2,10 +2,9 @@ locals {
   api_backends = length(var.api_backends) > 0 ? (
     var.api_backends
   ) : formatlist("etcd-%d.${var.exoscale_domain_name}", range(3))
-  internal_vip = var.cluster_network.enabled ? (
-    cidrhost(local.network_cidr, var.cluster_network.internal_vip_host)
-  ) : ""
-  nat_vip = var.cluster_network.enabled ? exoscale_elastic_ip.nat[0].ip_address : ""
+
+  internal_vip = ""
+  nat_vip      = ""
 }
 
 resource "exoscale_iam_role" "floaty" {

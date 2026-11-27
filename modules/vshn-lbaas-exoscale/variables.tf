@@ -3,20 +3,6 @@ variable "exoscale_domain_name" {
   description = "Exoscale-managed cluster domain name"
 }
 
-variable "cluster_network" {
-  type = object({
-    enabled           = bool
-    name              = string
-    internal_vip_host = string
-  })
-  description = "Set this to `enabled=true` and the name of an existing Exoscale private network to use that network as the LB private network."
-  default = {
-    enabled           = false
-    name              = ""
-    internal_vip_host = "100"
-  }
-}
-
 variable "cluster_id" {
   type        = string
   description = "ID of the cluster"

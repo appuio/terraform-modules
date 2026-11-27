@@ -9,9 +9,5 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 2.3"
     }
-    cidr = {
-      source  = "volcano-coffee-company/cidr"
-      version = "0.1.0"
-    }
   }
 }
