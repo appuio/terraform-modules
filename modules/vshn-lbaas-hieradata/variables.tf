@@ -111,3 +111,9 @@ variable "enable_proxy_protocol" {
   description = "Enable the PROXY protocol for the Router backends. WARNING: Connections will fail until you enable the same on the OpenShift router as well"
   default     = false
 }
+
+variable "extra_hieradata" {
+  type        = map
+  description = "Extra hieradata configs to write into the LB hieradata file. The module expects that keys in the map correspond to fully qualified Hieradata keys."
+  default     = {}
+}

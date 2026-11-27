@@ -70,4 +70,8 @@ module "hiera" {
       secret = nonsensitive(exoscale_iam_api_key.floaty.secret)
     }
   }
+
+  extra_hieradata = {
+    "profile_openshift4_gateway::exoscale_vpc_workaround": true
+  }
 }

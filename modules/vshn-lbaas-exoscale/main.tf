@@ -2,13 +2,18 @@ data "exoscale_domain" "cluster" {
   name = var.exoscale_domain_name
 }
 
-resource "exoscale_private_network" "lbnet" {
+resource "exoscale_vpc" "lbnet" {
   zone        = var.region
   name        = "${var.cluster_id}_lb_vrrp"
   description = "${var.cluster_id} private network for LB VRRP traffic"
-  start_ip    = cidrhost(local.lbnet_cidr, 101)
-  end_ip      = cidrhost(local.lbnet_cidr, 253)
-  netmask     = cidrnetmask(local.lbnet_cidr)
+}
+
+resource "exoscale_vpc_subnet" "lbnet" {
+  vpc_id      = exoscale_vpc.lbnet.id
+  zone        = var.region
+  name        = "${var.cluster_id}_lb_vrrp"
+  description = "${var.cluster_id} private network for LB VRRP traffic"
+  ipv4_block  = local.lbnet_cidr
 }
 
 resource "exoscale_elastic_ip" "api" {
@@ -160,14 +165,18 @@ resource "exoscale_compute_instance" "lb" {
 
   deploy_target_id = var.deploy_target_id
 
-  # Always configure privnet managed by the module
-  # (either clusternet or lb_vrrp)
-  network_interface {
-    network_id = exoscale_private_network.lbnet.id
-    ip_address = cidrhost(local.lbnet_cidr, 21 + count.index)
+  vpc {
+    id = exoscale_vpc.lbnet.id
+    interfaces = [
+      {
+        subnet_id    = exoscale_vpc_subnet.lbnet.id
+        ipv4_address = cidrhost(local.lbnet_cidr, 21 + count.index)
+      }
+    ]
   }
 
   # Configure additional interfaces for each provided privnet
+  # TODO(sg): figure out if/how this would work for VPCs
   dynamic "network_interface" {
     for_each = toset(var.additional_networks)
 
